@@ -47,14 +47,13 @@ const itemVariants = {
 };
 
 export default function Featured({ className }: { className?: string }) {
-  console.log('done');
   return (
     <motion.section
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
       variants={containerVariants}
-      className={`w-[90%] md:w-[75%] mx-auto ${className}`}
+      className={`w-[90%] md:w-[75%] mx-auto py-6 ${className}`}
     >
       <h2 className="mb-4 font-semibold text-center text-2xl">
         {sectionTitle}
