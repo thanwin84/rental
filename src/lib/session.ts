@@ -42,6 +42,7 @@ export async function deleteSession() {
 export async function verifySession() {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get('session-token')?.value;
+
   const decodedToken = await verifyToken(sessionToken);
   if (!decodedToken?.userId) {
     return {};

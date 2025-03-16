@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       { status: statusCodes.BAD_REQUEST }
     );
   }
-  await createSession(user._id, user.role);
+  await createSession(user._id.toString(), user.role);
   return NextResponse.json(
     apiResponse({
       success: true,
