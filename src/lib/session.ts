@@ -1,8 +1,14 @@
+import 'server-only';
 import { config } from '@/config';
 import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 
 const sessionSecret = new TextEncoder().encode(config.SESSION_SECRET);
+
+type Payload = {
+  userId: string;
+  role: string;
+};
 
 export const generateToken = async (payload: {
   userId: string;
@@ -18,7 +24,7 @@ export const verifyToken = async (token: string | undefined = '') => {
     const { payload } = await jwtVerify(token, sessionSecret, {
       algorithms: ['HS256'],
     });
-    return payload;
+    return payload as Payload;
   } catch (error) {
     console.log('Faild to verify');
     return null;
@@ -39,13 +45,32 @@ export async function deleteSession() {
   const cookieStore = await cookies();
   cookieStore.delete('session-token');
 }
-export async function verifySession() {
+export async function verifySession(): Promise<{
+  userId: string;
+  isAuthenticated: boolean;
+  role: string;
+}> {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get('session-token')?.value;
 
   const decodedToken = await verifyToken(sessionToken);
   if (!decodedToken?.userId) {
-    return {};
+    return { isAuthenticated: true, userId: '', role: '' };
   }
-  return decodedToken;
+  return { isAuthenticated: true, ...decodedToken };
+}
+
+export async function updateSession() {
+  const cookieStore = await cookies();
+  const sessionToken = cookieStore.get('session-token')?.value;
+  const payload = await verifyToken(sessionToken);
+  if (!sessionToken || !payload?.userId) {
+    return null;
+  }
+  cookieStore.set('session-token', sessionToken, {
+    httpOnly: true,
+    secure: true,
+    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    sameSite: 'lax',
+  });
 }
