@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server';
 import { updateSession } from './lib/session';
 
-const publicRoutes = ['/api/users/login', '/api/users/signup'];
+const publicRoutes = ['/login', '/signup'];
+
 export async function middleware(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
   const isPublicRoute = publicRoutes.includes(pathName);

@@ -17,11 +17,19 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
       unique: true,
+      index: true,
     },
     password: {
       type: String,
       required: true,
       trim: true,
+    },
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+      index: true,
     },
     isVerified: {
       type: Boolean,
@@ -29,8 +37,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['tenent', 'manager'],
-      default: 'tenent',
+      enum: ['tanent', 'manager'],
+      default: 'tanent',
     },
     phoneNumber: String,
     forgotPasswordToken: String,

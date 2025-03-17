@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(_request: NextRequest) {
   const decodedToken = await verifySession();
-  if (!decodedToken.userId) {
+  if (!decodedToken.isAuthenticated) {
     return NextResponse.json(
       apiResponse({ success: false, message: 'authentication invalid' }),
       { status: statusCodes.UNAUTHORIZED }
