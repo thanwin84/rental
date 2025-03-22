@@ -1,11 +1,11 @@
 'use server';
-import { singupFormSchema } from '@/lib/schemas/signupSchema';
+import { loginFormSchema } from '@/lib/schemas/loginSchema';
 import customFetch from '@/utils/customFetch';
 import { getFormValues } from '@/utils/getFormValues';
 
-export async function signupAction(_prevState: any, formData: FormData) {
+export async function loginAction(_prevState: unknown, formData: FormData) {
   const data = getFormValues(formData);
-  const validationResult = singupFormSchema.safeParse(data);
+  const validationResult = loginFormSchema.safeParse(data);
   const errors = validationResult.error?.flatten().fieldErrors;
   const formState = {
     formState: data,
@@ -17,7 +17,7 @@ export async function signupAction(_prevState: any, formData: FormData) {
     return formState;
   }
   try {
-    await customFetch.post('/api/users/register', data);
+    await customFetch.post('/api/users/login', data);
     formState.success = true;
     return formState;
   } catch (error: any) {
