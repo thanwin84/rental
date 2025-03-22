@@ -5,14 +5,19 @@ import Password from '@/components/Password';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { signupAction } from './signupAction';
 import { LoadingButton } from '@/components/LoadingButton';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-
+import { useDebounce } from 'use-debounce';
+import customFetch from '@/utils/customFetch';
+// TODO: If user does not fill the form correctly , it shows error. When user type again, the error message should disappears
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signupAction, undefined);
+  const [username, setUsername] = useState('');
+  const [usernameError, setUsernameError] = useState('');
+  const [debouncedUsername] = useDebounce(username, 500);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,9 +25,29 @@ export default function SignupPage() {
       toast.success('User is registered successfully');
       router.push('/login');
     } else {
-      toast.error(state?.message);
+      if (state?.message) {
+        toast.error(state.message);
+      }
     }
   }, [state]);
+
+  async function checkUsernameAvailability(username: string) {
+    try {
+      const { data } = await customFetch.post('/api/users/check-username', {
+        username,
+      });
+      if (data.success) {
+        setUsernameError('Username already exists.');
+      } else {
+        setUsernameError('');
+      }
+    } catch (error) {}
+  }
+  useEffect(() => {
+    if (debouncedUsername) {
+      checkUsernameAvailability(debouncedUsername);
+    }
+  }, [debouncedUsername]);
 
   return (
     <section className="p-8">
@@ -55,8 +80,9 @@ export default function SignupPage() {
           name="username"
           placeholder="Your username"
           type="text"
-          errorMessage={state?.errors?.username?.[0] as string}
+          errorMessage={state?.errors?.username?.[0] || usernameError}
           defaultValue={state?.formState.username as string}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <FormInput
           label="First email"
@@ -75,14 +101,15 @@ export default function SignupPage() {
             Role
           </Label>
           <RadioGroup id="role" name="role" defaultValue="tanent">
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="tanent" id="option-one" />
-              <Label htmlFor="option-one">Tenant</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="manager" id="option-two" />
-              <Label htmlFor="option-two">Manager</Label>
-            </div>
+            {[
+              { value: 'tanent', text: 'Tanent' },
+              { value: 'manager', text: 'Manager' },
+            ].map((item) => (
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value={item.value} id={item.value} />
+                <Label htmlFor={item.value}>{item.text}</Label>
+              </div>
+            ))}
           </RadioGroup>
         </div>
         {pending ? (
