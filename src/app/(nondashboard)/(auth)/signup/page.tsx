@@ -12,13 +12,20 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from 'use-debounce';
 import customFetch from '@/utils/customFetch';
-// TODO: If user does not fill the form correctly , it shows error. When user type again, the error message should disappears
+
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signupAction, undefined);
   const [username, setUsername] = useState('');
   const [usernameError, setUsernameError] = useState('');
   const [debouncedUsername] = useDebounce(username, 500);
   const router = useRouter();
+  const [fieldsTouched, setFieldsTouched] = useState({
+    firstName: false,
+    lastName: false,
+    username: false,
+    email: false,
+    password: false,
+  });
 
   useEffect(() => {
     if (state && state.success) {
@@ -48,11 +55,32 @@ export default function SignupPage() {
       checkUsernameAvailability(debouncedUsername);
     }
   }, [debouncedUsername]);
+  const handleSubmit = async (formData: FormData) => {
+    setFieldsTouched({
+      firstName: false,
+      lastName: false,
+      username: false,
+      email: false,
+      password: false,
+    });
+    action(formData);
+  };
+  function handleOnChange(value: string) {
+    setFieldsTouched((prev) => ({ ...prev, [value]: true }));
+  }
+  // Get error message for a field only if it hasn't been touched after errors appeared
+  function getErrorMessage(fieldName: string, errorMessage?: string) {
+    const message = fieldsTouched[fieldName as keyof typeof fieldsTouched]
+      ? ''
+      : errorMessage;
 
+    return message;
+  }
+  console.log(state?.errors);
   return (
     <section className="p-8">
       <form
-        action={action}
+        action={handleSubmit}
         className="p-6 rounded-md shadow-lg space-y-4 border lg:w-[40%] md:w-[60%] mx-auto"
       >
         <Logo className="text-xl" dark={false} />
@@ -64,15 +92,23 @@ export default function SignupPage() {
             label="First Name"
             name="firstName"
             placeholder="Your first name"
-            errorMessage={state?.errors?.firstName?.[0] as string}
+            errorMessage={getErrorMessage(
+              'firstName',
+              state?.errors?.firstName?.[0] as string
+            )}
             defaultValue={state?.formState.firstName as string}
+            onChange={(e) => handleOnChange('firstName')}
           />
           <FormInput
             label="Last Name"
             name="lastName"
             placeholder="Your last Name"
-            errorMessage={state?.errors?.lastName?.[0] as string}
+            errorMessage={getErrorMessage(
+              'lastName',
+              state?.errors?.lastName?.[0] as string
+            )}
             defaultValue={state?.formState.firstName as string}
+            onChange={(e) => handleOnChange('lastName')}
           />
         </div>
         <FormInput
@@ -89,12 +125,20 @@ export default function SignupPage() {
           name="email"
           placeholder="Your email"
           type="email"
-          errorMessage={state?.errors?.email?.[0] as string}
+          errorMessage={getErrorMessage(
+            'email',
+            state?.errors?.email?.[0] as string
+          )}
           defaultValue={state?.formState.email as string}
+          onChange={(e) => handleOnChange('email')}
         />
         <Password
-          errorMessage={state?.errors?.password?.[0] as string}
+          errorMessage={getErrorMessage(
+            'password',
+            state?.errors?.password?.[0] as string
+          )}
           defaultValue={state?.formState.password as string}
+          onChange={(e) => handleOnChange('password')}
         />
         <div className="space-y-2">
           <Label className="text-slate-700" htmlFor="role">
@@ -105,7 +149,7 @@ export default function SignupPage() {
               { value: 'tanent', text: 'Tanent' },
               { value: 'manager', text: 'Manager' },
             ].map((item) => (
-              <div className="flex items-center space-x-2">
+              <div key={item.value} className="flex items-center space-x-2">
                 <RadioGroupItem value={item.value} id={item.value} />
                 <Label htmlFor={item.value}>{item.text}</Label>
               </div>

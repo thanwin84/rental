@@ -1,17 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { InputHTMLAttributes, useState } from 'react';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
 import { Eye, EyeOff } from 'lucide-react';
 
+interface PasswordProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  errorMessage?: string;
+  defaultValue?: string;
+}
 export default function Password({
   errorMessage,
   defaultValue,
-}: {
-  errorMessage: string;
-  defaultValue: string;
-}) {
+  ...props
+}: PasswordProps) {
   const [canSee, setCanSee] = useState(false);
   function toggleCanSee() {
     setCanSee(!canSee);
@@ -28,6 +31,7 @@ export default function Password({
           className="rounded-r-none"
           type={canSee ? 'text' : 'password'}
           defaultValue={defaultValue}
+          {...props}
         />
         {canSee ? (
           <button
