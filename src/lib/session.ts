@@ -2,75 +2,105 @@ import 'server-only';
 import { config } from '@/config';
 import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
-
-const sessionSecret = new TextEncoder().encode(config.SESSION_SECRET);
+import { token } from './constants';
 
 type Payload = {
   userId: string;
   role: string;
 };
 
-export const generateToken = async (payload: {
+const refreshTokenSecret = new TextEncoder().encode(config.REFESH_TOKEN_SECRET);
+const accessTokenSecrete = new TextEncoder().encode(config.ACCESS_TOKEN_SECRET);
+
+export const generateAccessToken = async (payload: {
   userId: string;
   role: string;
 }) => {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: 'HS256' })
-    .setExpirationTime(config.SESSION_TOKEN_EXPIRY)
-    .sign(sessionSecret);
+    .setExpirationTime(config.ACCESS_TOKEN_EXPIRY)
+    .sign(accessTokenSecrete);
 };
-export const verifyToken = async (token: string | undefined = '') => {
+export const generateRefreshToken = async (payload: {
+  userId: string;
+  role: string;
+}) => {
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime(config.REFRESH_TOKEN_EXPIRY)
+    .sign(refreshTokenSecret);
+};
+export const verifyAccessToken = async (token: string | undefined = '') => {
   try {
-    const { payload } = await jwtVerify(token, sessionSecret, {
+    const { payload } = await jwtVerify(token, accessTokenSecrete, {
       algorithms: ['HS256'],
     });
     return payload as Payload;
   } catch (error) {
-    console.log('Faild to verify');
+    return null;
+  }
+};
+export const verifyRefreshToken = async (token: string | undefined = '') => {
+  try {
+    const { payload } = await jwtVerify(token, refreshTokenSecret, {
+      algorithms: ['HS256'],
+    });
+    return payload as Payload;
+  } catch (error) {
     return null;
   }
 };
 
 export async function createSession(userId: string, role: string) {
   const cookieStore = await cookies();
-  const sessionToken = await generateToken({ userId, role });
-  cookieStore.set('session-token', sessionToken, {
+  const accessToken = await generateAccessToken({ userId, role });
+  const refreshToken = await generateRefreshToken({ userId, role });
+  cookieStore.set(token.ACCESS_TOKEN, accessToken, {
     httpOnly: true,
-    secure: true,
-    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
+    path: '/',
+  });
+  cookieStore.set(token.REFRESH_TOKEN, refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
   });
 }
 export async function deleteSession() {
   const cookieStore = await cookies();
-  cookieStore.delete('session-token');
+  cookieStore.delete(token.ACCESS_TOKEN);
+  cookieStore.delete(token.REFRESH_TOKEN);
 }
 export async function verifySession(): Promise<{
   userId: string;
   isAuthenticated: boolean;
   role: string;
+  reason?: 'expired' | 'invalid' | 'none';
 }> {
   const cookieStore = await cookies();
-  const sessionToken = cookieStore.get('session-token')?.value;
+  const accessToken = cookieStore.get(token.ACCESS_TOKEN)?.value;
 
-  const decodedToken = await verifyToken(sessionToken);
-  if (!decodedToken?.userId) {
-    return { isAuthenticated: true, userId: '', role: '' };
+  const decodedAccessToken = await verifyAccessToken(accessToken);
+  if (decodedAccessToken && decodedAccessToken.userId) {
+    return { isAuthenticated: true, ...decodedAccessToken };
   }
-  return { isAuthenticated: true, ...decodedToken };
-}
 
-export async function updateSession() {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get('session-token')?.value;
-  const payload = await verifyToken(sessionToken);
-  if (!sessionToken || !payload?.userId) {
-    return null;
+  const refreshToken = cookieStore.get(token.REFRESH_TOKEN)?.value;
+  const isRefreshTokenValid = await verifyRefreshToken(refreshToken);
+  if (isRefreshTokenValid && isRefreshTokenValid.userId) {
+    await createSession(isRefreshTokenValid.userId, isRefreshTokenValid.role);
+    return {
+      isAuthenticated: true,
+      userId: isRefreshTokenValid.userId,
+      role: isRefreshTokenValid.role,
+      reason: refreshToken ? 'expired' : 'invalid',
+    };
   }
-  cookieStore.set('session-token', sessionToken, {
-    httpOnly: true,
-    secure: true,
-    expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    sameSite: 'lax',
-  });
+  return {
+    isAuthenticated: false,
+    userId: '',
+    role: '',
+  };
 }

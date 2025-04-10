@@ -76,22 +76,22 @@ export default function SignupPage() {
 
     return message;
   }
-  console.log(state?.errors);
+
   return (
-    <section className="p-8">
+    <section className='p-8'>
       <form
         action={handleSubmit}
-        className="p-6 rounded-md shadow-lg space-y-4 border lg:w-[40%] md:w-[60%] mx-auto"
+        className='p-6 rounded-md shadow-lg space-y-4 border lg:w-[40%] md:w-[60%] mx-auto'
       >
-        <Logo className="text-xl" dark={false} />
-        <h2 className="text-slate-700">
-          <span className="font-bold">Welcome!</span> Please sign in to coninue.
+        <Logo className='text-xl' dark={false} />
+        <h2 className='text-slate-700'>
+          <span className='font-bold'>Welcome!</span> Please sign in to coninue.
         </h2>
-        <div className="flex gap-4 ">
+        <div className='flex gap-4 '>
           <FormInput
-            label="First Name"
-            name="firstName"
-            placeholder="Your first name"
+            label='First Name'
+            name='firstName'
+            placeholder='Your first name'
             errorMessage={getErrorMessage(
               'firstName',
               state?.errors?.firstName?.[0] as string
@@ -100,9 +100,9 @@ export default function SignupPage() {
             onChange={(e) => handleOnChange('firstName')}
           />
           <FormInput
-            label="Last Name"
-            name="lastName"
-            placeholder="Your last Name"
+            label='Last Name'
+            name='lastName'
+            placeholder='Your last Name'
             errorMessage={getErrorMessage(
               'lastName',
               state?.errors?.lastName?.[0] as string
@@ -112,19 +112,19 @@ export default function SignupPage() {
           />
         </div>
         <FormInput
-          label="Username"
-          name="username"
-          placeholder="Your username"
-          type="text"
+          label='Username'
+          name='username'
+          placeholder='Your username'
+          type='text'
           errorMessage={state?.errors?.username?.[0] || usernameError}
           defaultValue={state?.formState.username as string}
           onChange={(e) => setUsername(e.target.value)}
         />
         <FormInput
-          label="First email"
-          name="email"
-          placeholder="Your email"
-          type="email"
+          label='Email'
+          name='email'
+          placeholder='Your email'
+          type='email'
           errorMessage={getErrorMessage(
             'email',
             state?.errors?.email?.[0] as string
@@ -140,16 +140,16 @@ export default function SignupPage() {
           defaultValue={state?.formState.password as string}
           onChange={(e) => handleOnChange('password')}
         />
-        <div className="space-y-2">
-          <Label className="text-slate-700" htmlFor="role">
+        <div className='space-y-2'>
+          <Label className='text-slate-700' htmlFor='role'>
             Role
           </Label>
-          <RadioGroup id="role" name="role" defaultValue="tanent">
+          <RadioGroup id='role' name='role' defaultValue='tanent'>
             {[
               { value: 'tanent', text: 'Tanent' },
               { value: 'manager', text: 'Manager' },
             ].map((item) => (
-              <div key={item.value} className="flex items-center space-x-2">
+              <div key={item.value} className='flex items-center space-x-2'>
                 <RadioGroupItem value={item.value} id={item.value} />
                 <Label htmlFor={item.value}>{item.text}</Label>
               </div>
@@ -157,11 +157,11 @@ export default function SignupPage() {
           </RadioGroup>
         </div>
         {pending ? (
-          <LoadingButton text="Creating.." />
+          <LoadingButton text='Creating..' />
         ) : (
           <Button
-            className="w-full bg-zinc-800 hover:bg-zinc-900 cursor-pointer"
-            type="submit"
+            className='w-full bg-zinc-800 hover:bg-zinc-900 cursor-pointer'
+            type='submit'
           >
             Create Account
           </Button>

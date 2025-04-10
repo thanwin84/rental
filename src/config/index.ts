@@ -1,6 +1,8 @@
 export const config = {
   MONGO_URI: process.env.MONGO_URL as string,
-  SESSION_SECRET: process.env.SESSION_SECRET as string,
-  SESSION_TOKEN_EXPIRY: process.env.SESSION_TOKEN_EXPIRY as string,
   BASE_URL: process.env.BASE_URL,
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET,
+  REFESH_TOKEN_SECRET: process.env.REFESH_TOKEN_SECRET,
+  ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY as string,
+  REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as string,
 };

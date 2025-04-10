@@ -49,21 +49,21 @@ export default function SignupPage() {
   }
 
   return (
-    <section className="p-8">
+    <section className='p-8'>
       <form
         action={handleSubmit}
-        className="p-6 rounded-md shadow-lg space-y-4 border lg:w-[40%] md:w-[60%] mx-auto"
+        className='p-6 rounded-md shadow-lg space-y-4 border lg:w-[40%] md:w-[60%] mx-auto'
       >
-        <Logo className="text-xl" dark={false} />
-        <h2 className="text-slate-700">
-          <span className="font-bold">Welcome!</span> Please log in to coninue.
+        <Logo className='text-xl' dark={false} />
+        <h2 className='text-slate-700'>
+          <span className='font-bold'>Welcome!</span> Please log in to coninue.
         </h2>
 
         <FormInput
-          label="First email"
-          name="email"
-          placeholder="Your email"
-          type="email"
+          label='Email'
+          name='email'
+          placeholder='Your email'
+          type='email'
           errorMessage={getErrorMessage(
             'email',
             state?.errors?.email?.[0] as string
@@ -81,11 +81,11 @@ export default function SignupPage() {
         />
 
         {pending ? (
-          <LoadingButton text="In progess.." />
+          <LoadingButton text='In progess..' />
         ) : (
           <Button
-            className="w-full bg-zinc-800 hover:bg-zinc-900 cursor-pointer"
-            type="submit"
+            className='w-full bg-zinc-800 hover:bg-zinc-900 cursor-pointer'
+            type='submit'
           >
             Login
           </Button>

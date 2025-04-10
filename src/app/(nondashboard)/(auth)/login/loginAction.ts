@@ -1,5 +1,6 @@
 'use server';
 import { loginFormSchema } from '@/lib/schemas/loginSchema';
+import { createSession } from '@/lib/session';
 import customFetch from '@/utils/customFetch';
 import { getFormValues } from '@/utils/getFormValues';
 
@@ -17,7 +18,8 @@ export async function loginAction(_prevState: unknown, formData: FormData) {
     return formState;
   }
   try {
-    await customFetch.post('/api/users/login', data);
+    const res: any = await customFetch.post('/api/users/login', data);
+    await createSession(res._id.toString(), res.role);
     formState.success = true;
     return formState;
   } catch (error: any) {

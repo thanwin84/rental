@@ -4,7 +4,7 @@ import { apiResponse } from '@/utils/apiResponse';
 import { statusCodes } from '@/utils/statusCodes';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { createSession } from '@/lib/session';
+import { createSession, generateAccessToken } from '@/lib/session';
 
 connectDb();
 export async function POST(request: NextRequest) {
@@ -30,13 +30,21 @@ export async function POST(request: NextRequest) {
       { status: statusCodes.BAD_REQUEST }
     );
   }
-  await createSession(user._id.toString(), user.role);
-  return NextResponse.json(
+
+  const accessToken = await generateAccessToken({
+    userId: user._id.toString(),
+    role: user.role,
+  });
+  const response = NextResponse.json(
     apiResponse({
       success: true,
       message: 'User is logged in successfully',
       data: user,
     }),
-    { status: statusCodes.OK }
+    {
+      status: statusCodes.OK,
+    }
   );
+
+  return response;
 }
