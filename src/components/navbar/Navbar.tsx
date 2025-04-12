@@ -7,7 +7,7 @@ export default function Navbar() {
   const isLoggedIn = true;
   return (
     <nav className='bg-stone-800 h-[58px] flex justify-between items-center px-8'>
-      <Link href='/landing'>
+      <Link href='/'>
         <Logo />
       </Link>
       <p className='hidden md:block text-slate-300'>

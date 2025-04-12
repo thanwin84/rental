@@ -1,4 +1,3 @@
-import Navbar from '@/components/navbar/Navbar';
 import { ReactNode } from 'react';
 
 export default function NonDashboardLayout({
@@ -8,7 +7,6 @@ export default function NonDashboardLayout({
 }) {
   return (
     <div>
-      <Navbar />
       <main>{children}</main>
     </div>
   );
