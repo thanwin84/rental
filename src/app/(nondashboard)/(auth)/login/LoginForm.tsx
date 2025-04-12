@@ -8,9 +8,11 @@ import { LoadingButton } from '@/components/LoadingButton';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { loginAction } from '@/app/actions';
+import { useAuthStore } from '@/lib/store/auth';
 
 export default function LoginForm() {
   const [state, action, pending] = useActionState(loginAction, undefined);
+  const authStore = useAuthStore();
   const router = useRouter();
   const [fieldsTouched, setFieldsTouched] = useState({
     email: false,
@@ -20,6 +22,7 @@ export default function LoginForm() {
   useEffect(() => {
     if (state && state.success) {
       toast.success('User is loginned successfully');
+      authStore.loadUser();
       router.push('/');
     } else {
       if (state?.message) {

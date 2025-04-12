@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { logout } from '@/app/actions';
+import { useAuthStore } from '@/lib/store/auth';
 
 type Props = {
   className?: string;
@@ -31,10 +32,12 @@ const links: { pathName: string; path?: string }[] = [
 
 export default function NavbarDropDownMenu({ className }: Props) {
   const router = useRouter();
+  const authStore = useAuthStore();
 
   async function handleLogout() {
     try {
       await logout();
+      authStore.logout();
       toast.success("You've logged out successfully");
       router.push('/login');
     } catch {
