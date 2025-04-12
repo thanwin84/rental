@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useActionState, useEffect, useState } from 'react';
-import { signupAction } from './signupAction';
 import { LoadingButton } from '@/components/LoadingButton';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from 'use-debounce';
 import customFetch from '@/utils/customFetch';
+import { signupAction } from '@/app/actions';
 
 export default function SignupPage() {
   const [state, action, pending] = useActionState(signupAction, undefined);
@@ -36,7 +36,7 @@ export default function SignupPage() {
         toast.error(state.message);
       }
     }
-  }, [state]);
+  }, [router, state]);
 
   async function checkUsernameAvailability(username: string) {
     try {
@@ -48,7 +48,7 @@ export default function SignupPage() {
       } else {
         setUsernameError('');
       }
-    } catch (error) {}
+    } catch {}
   }
   useEffect(() => {
     if (debouncedUsername) {

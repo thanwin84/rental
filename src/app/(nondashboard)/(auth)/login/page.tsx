@@ -7,7 +7,7 @@ import { useActionState, useEffect, useState } from 'react';
 import { LoadingButton } from '@/components/LoadingButton';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { loginAction } from './loginAction';
+import { loginAction } from '@/app/actions';
 
 export default function SignupPage() {
   const [state, action, pending] = useActionState(loginAction, undefined);
@@ -18,7 +18,6 @@ export default function SignupPage() {
   });
 
   useEffect(() => {
-    console.log(state);
     if (state && state.success) {
       toast.success('User is loginned successfully');
       router.push('/');

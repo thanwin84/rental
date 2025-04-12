@@ -4,7 +4,6 @@ import { apiResponse } from '@/utils/apiResponse';
 import { statusCodes } from '@/utils/statusCodes';
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { createSession, generateAccessToken } from '@/lib/session';
 
 connectDb();
 export async function POST(request: NextRequest) {
@@ -31,10 +30,6 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const accessToken = await generateAccessToken({
-    userId: user._id.toString(),
-    role: user.role,
-  });
   const response = NextResponse.json(
     apiResponse({
       success: true,

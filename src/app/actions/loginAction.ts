@@ -1,8 +1,10 @@
 'use server';
 import { loginFormSchema } from '@/lib/schemas/loginSchema';
 import { createSession } from '@/lib/session';
+import { User } from '@/lib/types';
 import customFetch from '@/utils/customFetch';
 import { getFormValues } from '@/utils/getFormValues';
+import { AxiosError } from 'axios';
 
 export async function loginAction(_prevState: unknown, formData: FormData) {
   const data = getFormValues(formData);
@@ -18,12 +20,17 @@ export async function loginAction(_prevState: unknown, formData: FormData) {
     return formState;
   }
   try {
-    const res: any = await customFetch.post('/api/users/login', data);
+    const res: User = await customFetch.post('/api/users/login', data);
     await createSession(res._id.toString(), res.role);
     formState.success = true;
     return formState;
-  } catch (error: any) {
-    formState.message = error.response.data.message;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError && error.response?.data?.message) {
+      formState.message = error.response.data.message;
+    } else {
+      formState.message = 'Something went wrong. Please try again.';
+    }
+
     return formState;
   }
 }

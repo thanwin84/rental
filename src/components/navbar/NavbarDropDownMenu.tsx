@@ -7,6 +7,9 @@ import {
 } from '../ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { logout } from '@/app/actions';
 
 type Props = {
   className?: string;
@@ -27,6 +30,17 @@ const links: { pathName: string; path?: string }[] = [
 ];
 
 export default function NavbarDropDownMenu({ className }: Props) {
+  const router = useRouter();
+
+  async function handleLogout() {
+    try {
+      await logout();
+      toast.success("You've logged out successfully");
+      router.push('/login');
+    } catch {
+      toast.error('Something went wrong while logout');
+    }
+  }
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -51,7 +65,7 @@ export default function NavbarDropDownMenu({ className }: Props) {
               <DropdownMenuLabel
                 className='text-center px-3 py-2 text-slate-200  hover:bg-stone-700 rounded-md cursor-pointer transition-colors'
                 key={link.pathName}
-                onClick={() => console.log('loging oujt')}
+                onClick={handleLogout}
               >
                 Logout
               </DropdownMenuLabel>
