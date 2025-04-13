@@ -6,9 +6,9 @@ import { NextRequest, NextResponse } from 'next/server';
 connectDb();
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  context: { params: { userId: string } }
 ) {
-  const { userId } = params;
+  const { userId } = context.params;
   const reqBody = await req.json();
   if (!userId) {
     return NextResponse.json(
