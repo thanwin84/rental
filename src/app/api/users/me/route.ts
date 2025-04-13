@@ -3,10 +3,15 @@ import { verifyAccessToken } from '@/lib/session';
 import User from '@/models/user.model';
 import { apiResponse } from '@/utils/apiResponse';
 import { statusCodes } from '@/utils/statusCodes';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const accessToken = request.cookies.get(token.ACCESS_TOKEN)?.value;
+  const cookieStore = await cookies();
+  const accessToken =
+    request.cookies.get(token.ACCESS_TOKEN)?.value ||
+    cookieStore.get(token.ACCESS_TOKEN)?.value;
+
   const decodedToken = await verifyAccessToken(accessToken);
   if (decodedToken && !decodedToken.userId) {
     return NextResponse.json(

@@ -4,9 +4,9 @@ import { TanentSettingForm } from '@/components/dashboard/setting/TanentSettingF
 import { useAuthStore } from '@/lib/store/auth';
 
 export default function SettingPage() {
-  const authStore = useAuthStore();
+  const { isLoading, user } = useAuthStore();
 
-  if (authStore.isLoading || !authStore.user) {
+  if (isLoading || !user) {
     return (
       <div className='h-screen flex justify-center py-8'>
         <Spinner size={40} />
@@ -16,10 +16,10 @@ export default function SettingPage() {
   return (
     <div className='w-full px-6 py-8'>
       <TanentSettingForm
-        firstName={authStore.user.firstName}
-        lastName={authStore.user.lastName}
-        email={authStore.user.email}
-        id={authStore.user._id}
+        firstName={user.firstName}
+        lastName={user.lastName}
+        email={user.email}
+        id={user._id}
       />
     </div>
   );

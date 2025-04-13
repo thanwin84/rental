@@ -3,7 +3,8 @@ import { updateUserAction } from '@/app/actions';
 import FormInput from '@/components/FormInput';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useAuthStore } from '@/lib/store/auth';
+import { useActionState, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 // TODO: Toast does not work for subsequent successful form update
@@ -21,7 +22,8 @@ export function TanentSettingForm({
   id: string;
 }) {
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const prevSuccessRef = useRef(false);
+  const { loadUser } = useAuthStore();
+
   const [state, formAction, isPending] = useActionState(updateUserAction, {
     formState: { firstName: firstName, lastName: lastName, email: email },
     message: '',
@@ -55,12 +57,11 @@ export function TanentSettingForm({
   }
 
   useEffect(() => {
-    if (state.success && prevSuccessRef.current) {
-      prevSuccessRef.current = false;
+    if (state.success) {
+      loadUser();
       toast.success('You have updated your information successfully');
     }
-    prevSuccessRef.current = state.success;
-  }, [state.success]);
+  }, [loadUser, state.success]);
 
   return (
     <form
