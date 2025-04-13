@@ -1,6 +1,6 @@
 import { token } from '@/lib/constants';
+import { getUserById } from '@/lib/db/user';
 import { verifyAccessToken } from '@/lib/session';
-import User from '@/models/user.model';
 import { apiResponse } from '@/utils/apiResponse';
 import { statusCodes } from '@/utils/statusCodes';
 import { cookies } from 'next/headers';
@@ -13,26 +13,17 @@ export async function GET(request: NextRequest) {
     cookieStore.get(token.ACCESS_TOKEN)?.value;
 
   const decodedToken = await verifyAccessToken(accessToken);
+
   if (decodedToken && !decodedToken.userId) {
     return NextResponse.json(
-      apiResponse({ success: false, message: 'authentication invalid' }),
+      apiResponse({
+        success: false,
+        message: 'authentication invalid',
+        status: statusCodes.UNAUTHORIZED,
+      }),
       { status: statusCodes.UNAUTHORIZED }
     );
   }
-
-  const user = await User.findById(decodedToken?.userId);
-  if (!user) {
-    return NextResponse.json(
-      apiResponse({ success: false, message: 'User does not exists' }),
-      { status: statusCodes.BAD_REQUEST }
-    );
-  }
-  return NextResponse.json(
-    apiResponse({
-      success: true,
-      message: 'user data is fetched successfully',
-      data: user,
-    }),
-    { status: statusCodes.OK }
-  );
+  const result = await getUserById(decodedToken?.userId as string);
+  return NextResponse.json(result, { status: result.status });
 }
