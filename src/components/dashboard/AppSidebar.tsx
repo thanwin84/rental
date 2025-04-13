@@ -20,7 +20,7 @@ const managerNavlinks = [
   {
     label: 'Setting',
     icon: Settings,
-    href: '/settings',
+    href: '/dashboard/settings',
   },
   {
     label: 'Applications',
@@ -47,7 +47,7 @@ const tanentsNavlinks = [
   {
     label: 'Setting',
     icon: Settings,
-    href: '/settings',
+    href: '/dashboard/settings',
   },
 ];
 export default function AppSidebar({ role }: { role: 'tenant' | 'manager' }) {

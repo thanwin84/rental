@@ -8,7 +8,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <DashboardNavbar />
       <AppSidebar role='tenant' />
-      <main className='mt-14'>{children}</main>
+      <main className='mt-14 w-full'>{children}</main>
     </SidebarProvider>
   );
 }
