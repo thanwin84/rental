@@ -1,6 +1,9 @@
 import z from 'zod';
+import { DateMixin, IDSchema } from './mixin';
 
-export const singupFormSchema = z.object({
+export const userSchema = z.object({
+  ...IDSchema.shape,
+  ...DateMixin.shape,
   firstName: z
     .string()
     .min(1, 'First Name is required')
@@ -22,4 +25,18 @@ export const singupFormSchema = z.object({
   role: z.enum(['tanent', 'manager'], {
     required_error: 'Please select an option',
   }),
+  isVerified: z.boolean(),
 });
+export type User = z.infer<typeof userSchema>;
+export const singupFormSchema = userSchema.omit({
+  _id: true,
+  createdAt: true,
+  updatedAt: true,
+  isVerified: true,
+});
+export type SingupFormType = z.infer<typeof singupFormSchema>;
+export const loginFormSchema = userSchema.pick({
+  password: true,
+  email: true,
+});
+export type LoginFormType = z.infer<typeof loginFormSchema>;

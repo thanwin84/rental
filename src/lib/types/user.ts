@@ -6,7 +6,7 @@ export type User = {
   password: string;
   username: string;
   isVerified: boolean;
-  role: 'tenant' | 'manager';
+  role: 'tanent' | 'manager';
   createdAt: string;
   updatedAt: string;
 };

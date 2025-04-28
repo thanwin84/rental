@@ -1,5 +1,5 @@
 'use server';
-import { singupFormSchema } from '@/lib/schemas/signupSchema';
+import { singupFormSchema } from '@/lib/schemas/user';
 import customFetch from '@/utils/customFetch';
 import { getFormValues } from '@/utils/getFormValues';
 import { AxiosError } from 'axios';

@@ -5,4 +5,5 @@ export const config = {
   REFESH_TOKEN_SECRET: process.env.REFESH_TOKEN_SECRET,
   ACCESS_TOKEN_EXPIRY: process.env.ACCESS_TOKEN_EXPIRY as string,
   REFRESH_TOKEN_EXPIRY: process.env.REFRESH_TOKEN_EXPIRY as string,
+  OPENCAGE_API_KEY: process.env.OPENCAGE_API_KEY as string,
 };

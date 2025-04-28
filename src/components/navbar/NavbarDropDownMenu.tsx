@@ -18,7 +18,7 @@ type Props = {
 
 const links: { pathName: string; path?: string }[] = [
   {
-    pathName: 'My Dashboard',
+    pathName: 'Dashboard',
     path: '/dashboard',
   },
   {
@@ -33,7 +33,7 @@ const links: { pathName: string; path?: string }[] = [
 export default function NavbarDropDownMenu({ className }: Props) {
   const router = useRouter();
   const authStore = useAuthStore();
-
+  const role = authStore.user?.role;
   async function handleLogout() {
     try {
       await logout();
@@ -75,7 +75,16 @@ export default function NavbarDropDownMenu({ className }: Props) {
             );
           }
           return (
-            <Link key={link.pathName} href={link.path as string}>
+            <Link
+              key={link.pathName}
+              href={
+                link.path === '/dashboard' && role == 'tanent'
+                  ? '/renter/dashboard'
+                  : link.path === '/dashboard' && role == 'manager'
+                  ? '/manager/dashboard'
+                  : (link.path as string)
+              }
+            >
               <DropdownMenuLabel
                 key={link.pathName}
                 className='text-center px-3 py-2 text-slate-200 hover:bg-stone-700 rounded-md cursor-pointer transition-colors'

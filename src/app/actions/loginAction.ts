@@ -1,5 +1,6 @@
 'use server';
-import { loginFormSchema } from '@/lib/schemas/loginSchema';
+
+import { loginFormSchema } from '@/lib/schemas';
 import { createSession } from '@/lib/session';
 import { User } from '@/lib/types';
 import customFetch from '@/utils/customFetch';

@@ -35,6 +35,7 @@ export const verifyAccessToken = async (token: string | undefined = '') => {
     const { payload } = await jwtVerify(token, accessTokenSecrete, {
       algorithms: ['HS256'],
     });
+
     return payload as Payload;
   } catch (error) {
     return null;
