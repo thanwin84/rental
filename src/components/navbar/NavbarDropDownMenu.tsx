@@ -23,7 +23,7 @@ const links: { pathName: string; path?: string }[] = [
   },
   {
     pathName: 'Setting',
-    path: '/',
+    path: '/renter/dashboard/settings',
   },
   {
     pathName: 'Logout',

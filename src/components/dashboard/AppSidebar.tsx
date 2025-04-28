@@ -15,39 +15,39 @@ const managerNavlinks = [
   {
     label: 'Properties',
     icon: Building,
-    href: 'properties',
+    href: '/manager/dashboard/properties',
   },
   {
     label: 'Setting',
     icon: Settings,
-    href: '/dashboard/settings',
+    href: '/manager/dashboard/settings',
   },
   {
     label: 'Applications',
     icon: FileText,
-    href: '/applications',
+    href: '/manager/dashboard/applications',
   },
 ];
 const tanentsNavlinks = [
   {
     label: 'Favourites',
     icon: Heart,
-    href: '/favourites',
+    href: '/renter/dashboard/favourites',
   },
   {
     label: 'Applications',
     icon: FileText,
-    href: '/applications',
+    href: '/renter/dashboard/applications',
   },
   {
     label: 'Residences',
     icon: House,
-    href: '/residences',
+    href: '/renter/dashboard/residences',
   },
   {
     label: 'Setting',
     icon: Settings,
-    href: '/dashboard/settings',
+    href: '/renter/dashboard/settings',
   },
 ];
 export default function AppSidebar({ role }: { role: 'tenant' | 'manager' }) {

@@ -105,3 +105,10 @@ export async function verifySession(): Promise<{
     role: '',
   };
 }
+
+export async function decodedAccessToken() {
+  const cookie = await cookies();
+  const accessToken = cookie.get('access-token')?.value;
+  const decodedToken = await verifyAccessToken(accessToken);
+  return decodedToken;
+}
