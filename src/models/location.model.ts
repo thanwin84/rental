@@ -22,6 +22,7 @@ const locationSchema = new Schema(
     timestamps: true,
   }
 );
+locationSchema.index({ coordinates: '2dsphere' });
 
 const Location = models.Location || model('Location', locationSchema);
 export default Location;
