@@ -1,14 +1,21 @@
 import { getUserFromToken } from '@/lib/auth';
 import { createLocation } from '@/lib/db/location';
 import { createProperty } from '@/lib/db/property';
+import { uploadToCloudinary } from '@/lib/uploadOnCloudinary';
 import { apiResponse } from '@/utils/apiResponse';
 import { getCoordinatesFromLocation } from '@/utils/location';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
-  const reqBody = await request.json();
-  const { location, property } = reqBody;
+  const data = await request.formData();
+  const file = data.get('image') as File;
+  const location = JSON.parse(data.get('location') as string);
+  const property = JSON.parse(data.get('property') as string);
 
+  let uploadResponse;
+  if (file) {
+    uploadResponse = await uploadToCloudinary(file);
+  }
   const { lng, lat } = await getCoordinatesFromLocation(location);
   try {
     const user = await getUserFromToken(request);
@@ -33,11 +40,11 @@ export async function POST(request: NextRequest) {
       ...property,
       locationId: locationData._id,
       ownerId: user.userId.toString(),
+      photoUrLs: [uploadResponse?.secure_url as string],
     });
 
     return NextResponse.json(newProperty, { status: newProperty.status });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({ success: false }, { status: 500 });
+    return NextResponse.json({ success: false, error: error }, { status: 500 });
   }
 }
