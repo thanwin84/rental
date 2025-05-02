@@ -1,7 +1,13 @@
 import { z } from 'zod';
 import { highlight, amenity, propertyType } from '../constants';
-import mongoose from 'mongoose';
-import { Location } from './location';
+import { locationSchema } from './location';
+
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+];
 
 const PropertyTypeEnum = z.enum(
   Object.values(propertyType) as [keyof typeof propertyType]
@@ -12,35 +18,38 @@ const HighlightEnum = z.enum(
 );
 
 export const propertyZodSchema = z.object({
-  name: z.string().trim().min(1, 'Property name is required'),
-  description: z.string().min(1, 'Description is required'),
-  pricePerMonth: z.number().min(0, 'Price must be a positive number'),
-  securityDeposit: z.number().optional(),
-  applicationFee: z.number().optional(),
-  photoUrLs: z.array(z.string().url()).optional(),
-  amenities: z.array(AmenityEnum).optional(),
-  highLights: z.array(HighlightEnum).optional(),
-  isParkingIncluded: z.boolean().optional(),
-  beds: z.number().min(0, 'Beds must be a positive number'),
-  baths: z.number().min(0, 'Baths must be a positive number'),
-  squareFeet: z.number().optional(),
-  propertyType: PropertyTypeEnum,
-  averageRating: z.number().default(0),
-  numberOfReviews: z.number().default(0),
-  locationId: z
-    .string()
-    .refine((value) => mongoose.Types.ObjectId.isValid(value), {
-      message: 'Location id must be valid ',
+  property: z.object({
+    name: z.string().trim().min(1, 'Name is required'),
+    description: z.string().min(1, 'Description is required'),
+    pricePerMonth: z.coerce.number({ message: 'Price per month is required' }),
+    securityDeposit: z.coerce.number({
+      message: 'Security deposit is required.',
     }),
-  ownerId: z
-    .string()
-    .refine((value) => mongoose.Types.ObjectId.isValid(value), {
-      message: 'User id must be valid ',
-    }),
+    applicationFee: z.coerce.number(),
+    amenities: z.array(AmenityEnum).optional(),
+    highLights: z.array(HighlightEnum).optional(),
+    isParkingIncluded: z.boolean().optional(),
+    beds: z.coerce
+      .number({ message: 'Beds is required' })
+      .min(0, 'Beds must be a positive number'),
+    baths: z.coerce
+      .number({ message: 'Baths is required' })
+      .min(0, 'Baths must be a positive number'),
+    squareFeet: z.coerce.number().optional(),
+    propertyType: PropertyTypeEnum,
+    averageRating: z.coerce.number().optional(),
+    numberOfReviews: z.coerce.number().optional(),
+    image: z
+      .instanceof(File)
+      .optional()
+      .refine((file) => !file || file.size <= 500000, {
+        message: 'Image size must be under 0.5MB',
+      })
+      .refine((file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type), {
+        message: 'Only JPEG, JPG, PNG, or WEBP files are accepted',
+      }),
+  }),
+  location: locationSchema.omit({ coordinates: true }),
 });
 
 export type PropertyType = z.infer<typeof propertyZodSchema>;
-
-export type PropertyApiReponse = Omit<PropertyType, 'ownerId' |'locationId'> & {location: Location} & {
-  user: User
-}
