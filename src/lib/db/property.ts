@@ -134,3 +134,8 @@ export const getSingleProperty = async (propertyId: string) => {
   delete propertyObj.locationId;
   return propertyObj;
 };
+
+export const deletePropertyById = async (propertyId: string) => {
+  const reuslt = await Property.findByIdAndDelete(propertyId);
+  await Location.deleteOne({ _id: reuslt.locationId });
+};
