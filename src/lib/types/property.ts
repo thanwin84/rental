@@ -25,6 +25,7 @@ export interface Property {
   averageRating: number;
   numberOfReviews: number;
   locationId: string;
+  isAvailable: boolean;
   ownerId: string;
   createdAt: string;
   updatedAt: string;

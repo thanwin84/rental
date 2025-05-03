@@ -28,7 +28,7 @@ export default function PropertyDetailsForm({}: Props) {
 
   return (
     <div>
-      <h2 className='text-xl font-semibold text-slate-800 mb-3'>
+      <h2 className='text-xl font-semibold text-slate-800 items-center mb-3'>
         Property Details
       </h2>
       <div className='space-y-2 md:grid md:grid-cols-3 gap-3'>
@@ -86,6 +86,25 @@ export default function PropertyDetailsForm({}: Props) {
               </FormControl>
               <FormLabel className='text-slate-700 cursor-pointer'>
                 Parking Included
+              </FormLabel>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={control}
+          name='property.isAvailable'
+          render={({ field }) => (
+            <FormItem className='w-full flex items-center space-x-3 space-y-0 cursor-pointer'>
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  className='border border-slate-600 cursor-pointer'
+                />
+              </FormControl>
+              <FormLabel className='text-slate-700 cursor-pointer'>
+                Is this property available?
               </FormLabel>
               <FormMessage />
             </FormItem>

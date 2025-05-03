@@ -53,6 +53,10 @@ const propertySchema = new Schema(
       ref: 'User',
       required: true,
     },
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

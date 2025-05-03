@@ -37,6 +37,7 @@ export default function CreatePropertyForm({}: Props) {
         beds: 0,
         baths: 0,
         squareFeet: 0,
+        isAvailable: true,
       },
       location: {
         address: '',

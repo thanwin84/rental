@@ -39,6 +39,7 @@ export const propertyZodSchema = z.object({
     propertyType: PropertyTypeEnum,
     averageRating: z.coerce.number().optional(),
     numberOfReviews: z.coerce.number().optional(),
+    isAvailable: z.coerce.boolean(),
     image: z
       .instanceof(File)
       .optional()
