@@ -1,10 +1,11 @@
 import { getUserFromToken } from '@/lib/auth';
 import { createLocation } from '@/lib/db/location';
-import { createProperty } from '@/lib/db/property';
+import { createProperty, getProperties } from '@/lib/db';
 import { uploadToCloudinary } from '@/lib/uploadOnCloudinary';
 import { apiResponse } from '@/utils/apiResponse';
 import { getCoordinatesFromLocation } from '@/utils/location';
 import { NextRequest, NextResponse } from 'next/server';
+import mongoose from 'mongoose';
 
 export async function POST(request: NextRequest) {
   const data = await request.formData();
@@ -31,13 +32,19 @@ export async function POST(request: NextRequest) {
         }
       );
     }
-
+    const propertyId = new mongoose.Types.ObjectId();
     const locationData = await createLocation({
       ...location,
-      coordinates: [lng, lat],
+      propertyId: propertyId.toString(),
+      location: {
+        type: 'Point',
+        coordinates: [parseFloat(lng), parseFloat(lat)],
+      },
     });
+
     const newProperty = await createProperty({
       ...property,
+      _id: propertyId.toString(),
       locationId: locationData._id,
       ownerId: user.userId.toString(),
       photoUrLs: [uploadResponse?.secure_url as string],
@@ -45,6 +52,16 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newProperty, { status: newProperty.status });
   } catch (error) {
+    console.log(error);
     return NextResponse.json({ success: false, error: error }, { status: 500 });
   }
+}
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const result = await getProperties(searchParams);
+  return NextResponse.json({
+    status: 200,
+    data: result,
+  });
 }

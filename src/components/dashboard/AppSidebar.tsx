@@ -9,9 +9,14 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '../ui/sidebar';
-import { Building, Settings, FileText, Heart, House } from 'lucide-react';
+import { Building, Settings, FileText, Heart, House, Plus } from 'lucide-react';
 
 const managerNavlinks = [
+  {
+    label: 'Create Property',
+    icon: Plus,
+    href: '/manager/dashboard/create-property',
+  },
   {
     label: 'Properties',
     icon: Building,
