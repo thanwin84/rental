@@ -51,4 +51,10 @@ const applicationStatus = {
   Approved: 'Approved',
 } as const;
 
-export { highlight, amenity, propertyType, applicationStatus };
+const paymentStatus = {
+  RENT: 'rent',
+  SECURITY_DEPOSIT: 'securityDeposit',
+  APPLICATION_FEE: 'applicationFee',
+};
+
+export { highlight, amenity, propertyType, applicationStatus, paymentStatus };

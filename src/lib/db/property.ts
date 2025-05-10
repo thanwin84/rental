@@ -21,7 +21,7 @@ export const getProperties = async (searchParams: URLSearchParams) => {
   const priceMax = searchParams.get('priceMax');
   const baths = searchParams.get('baths');
   const beds = searchParams.get('beds');
-  const propertyType = searchParams.get('propertyType');
+  const propertyType = searchParams.getAll('propertyType');
   const squareFeetMin = searchParams.get('squareFeetMin');
   const squareFeetMax = searchParams.get('squareFeetMax');
   const amenities = searchParams.getAll('amenities');
@@ -30,9 +30,17 @@ export const getProperties = async (searchParams: URLSearchParams) => {
   const limit = Number(searchParams.get('limit')) || 10;
   const page = Number(searchParams.get('page')) || 1;
   const skips = (page - 1) * limit;
+  const city = searchParams.get('city');
+  const country = searchParams.get('country');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const query: any = {};
+  if (city) {
+    query.city = { $regex: city, $options: 'i' };
+  }
+  if (country) {
+    query.country = { $regex: country, $options: 'i' };
+  }
   if (priceMin || priceMax) {
     query['property.pricePerMonth'] = {};
     if (priceMin) query['property.pricePerMonth'].$gte = Number(priceMin);
@@ -54,8 +62,8 @@ export const getProperties = async (searchParams: URLSearchParams) => {
     query['property.beds'] = Number(beds);
   }
 
-  if (propertyType) {
-    query['property.propertyType'] = propertyType;
+  if (propertyType.length > 0) {
+    query['property.propertyType'] = { $in: propertyType };
   }
 
   if (amenities.length > 0) {
@@ -116,6 +124,7 @@ export const getProperties = async (searchParams: URLSearchParams) => {
   ]);
   const total = countResult[0]?.total || 0;
   const totalPages = Math.ceil(total / limit);
+
   const pagination: Pagination = {
     totalItems: total,
     totalPages,

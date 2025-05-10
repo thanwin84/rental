@@ -1,8 +1,15 @@
 import { config } from '@/config';
-import { Location } from '@/lib/schemas/location';
-import axios from 'axios';
 
-export async function getCoordinatesFromLocation(location: Location) {
+import axios from 'axios';
+export type GetCoordinatesFromLocationType = {
+  address?: string;
+  city: string;
+  state?: string;
+  country: string;
+};
+export async function getCoordinatesFromLocation(
+  location: GetCoordinatesFromLocationType
+) {
   const parts = [
     location.address,
     location.city,
@@ -28,6 +35,7 @@ export async function getCoordinatesFromLocation(location: Location) {
     } else {
       throw new Error('No coordinates found for the location');
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     throw new Error(`Geocoding failed: ${error.message}`);
   }
