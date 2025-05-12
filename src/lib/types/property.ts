@@ -52,6 +52,17 @@ export type LocationResponse = {
   properties: Location[];
   pagination: Pagination;
 };
+export type PropertyOnMap = {
+  _id: string;
+  city: string;
+  country: string;
+  coordinates: [number, number];
+  property: {
+    _id: string;
+    name: string;
+    pricePerMonth: string;
+  };
+};
 
 export type SingleProperTy = Property & {
   location: Omit<Location, 'property'>;

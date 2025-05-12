@@ -32,6 +32,26 @@ export const getProperties = async (searchParams: URLSearchParams) => {
   const skips = (page - 1) * limit;
   const city = searchParams.get('city');
   const country = searchParams.get('country');
+  const polygon = searchParams.get('polygon');
+
+  let polygonCoordinates;
+  if (polygon) {
+    const [southWestLat, southWestLng, northEastLat, northEastLng] = polygon
+      .split(',')
+      .map((coord) => parseFloat(coord));
+    if ([southWestLat, southWestLng, northEastLat, northEastLng].some(isNaN)) {
+      throw new Error('Invalid polygon coordinates');
+    }
+    polygonCoordinates = [
+      [
+        [southWestLng, southWestLat],
+        [northEastLng, southWestLat],
+        [northEastLng, northEastLat],
+        [southWestLng, northEastLat],
+        [southWestLng, southWestLat], // Close the polygon with the first point
+      ],
+    ];
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const query: any = {};
@@ -116,6 +136,22 @@ export const getProperties = async (searchParams: URLSearchParams) => {
     pipeline.unshift(geoLocationStage);
     countPipeline.unshift(geoLocationStage);
   }
+  if (!city && !country && polygon) {
+    const geoWithin = {
+      $match: {
+        location: {
+          $geoWithin: {
+            $geometry: {
+              type: 'Polygon',
+              coordinates: polygonCoordinates,
+            },
+          },
+        },
+      },
+    };
+    pipeline.unshift(geoWithin);
+    countPipeline.unshift(geoWithin);
+  }
 
   const properties = await Location.aggregate(pipeline);
   const countResult = await Location.aggregate([
@@ -134,6 +170,71 @@ export const getProperties = async (searchParams: URLSearchParams) => {
     properties: properties,
     pagination,
   };
+};
+
+export const getPropertiesWithinMapBounds = async (
+  searchParams: URLSearchParams
+) => {
+  const polygon = searchParams.get('polygon');
+
+  let polygonCoordinates;
+  if (polygon) {
+    const [southWestLat, southWestLng, northEastLat, northEastLng] = polygon
+      .split(',')
+      .map((coord) => parseFloat(coord));
+    if ([southWestLat, southWestLng, northEastLat, northEastLng].some(isNaN)) {
+      throw new Error('Invalid polygon coordinates');
+    }
+    polygonCoordinates = [
+      [
+        [southWestLng, southWestLat],
+        [northEastLng, southWestLat],
+        [northEastLng, northEastLat],
+        [southWestLng, northEastLat],
+        [southWestLng, southWestLat], // Close the polygon with the first point
+      ],
+    ];
+  }
+
+  const properties = await Location.aggregate([
+    {
+      $match: {
+        location: {
+          $geoWithin: {
+            $geometry: {
+              type: 'Polygon',
+              coordinates: polygonCoordinates,
+            },
+          },
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: 'properties',
+        localField: 'propertyId',
+        foreignField: '_id',
+        as: 'property',
+      },
+    },
+    {
+      $addFields: {
+        property: { $first: '$property' },
+        coordinates: '$location.coordinates',
+      },
+    },
+    {
+      $project: {
+        coordinates: 1,
+        'property._id': 1,
+        'property.name': 1,
+        'property.pricePerMonth': 1,
+        city: 1,
+        country: 1,
+      },
+    },
+  ]);
+  return properties;
 };
 
 export const getSingleProperty = async (propertyId: string) => {

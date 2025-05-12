@@ -4,8 +4,12 @@ import { useSidebar } from '@/components/ui/sidebar';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Location } from '@/lib/types';
 import { offsetCoordinates } from '@/utils';
+import { useEffect, useRef } from 'react';
+import BoundsTracker from './BoundsTracker';
+import { useQuery } from '@tanstack/react-query';
+import { propertyService } from '@/lib/services';
+import { useSearchParams } from 'next/navigation';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -18,20 +22,37 @@ L.Icon.Default.mergeOptions({
 
 type Props = {
   className?: string;
-  properties: Location[];
+
   centerCoordinates: [number, number];
 };
 
 export default function MapView({
   className,
-  properties,
+
   centerCoordinates,
 }: Props) {
   const { open } = useSidebar();
   const w = open ? 'w-[calc(100%-16rem-24%)]' : 'w-[67%]';
+  const initialCenterRef = useRef(false);
+  const searchParams = useSearchParams();
+  const polygonParam = searchParams.get('polygon') as string;
+  const { data } = useQuery({
+    queryKey: ['properties', polygonParam],
+    queryFn: () => propertyService.getPropertiesWithin(polygonParam),
+    enabled: !!polygonParam,
+  });
+
   function RecenterMap({ center }: { center: [number, number] }) {
     const map = useMap();
-    map.setView(center, map.getZoom());
+
+    // Only center the map on the first render
+    useEffect(() => {
+      if (!initialCenterRef.current) {
+        map.setView(center, map.getZoom());
+        initialCenterRef.current = true;
+      }
+    }, [center, map]);
+
     return null;
   }
 
@@ -50,10 +71,11 @@ export default function MapView({
           subdomains={['a', 'b', 'c', 'd']}
           maxZoom={19}
         />
-        {properties?.map((property) => (
+        <BoundsTracker />
+        {data?.map((property) => (
           <Marker
             key={property._id}
-            position={offsetCoordinates(property.location.coordinates)}
+            position={offsetCoordinates(property.coordinates)}
           >
             <Popup>
               <div className='flex gap-2 flex-col'>

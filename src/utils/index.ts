@@ -17,6 +17,7 @@ export function createPropertyQueryString({
   amenities,
   priceMin,
   priceMax,
+  polygon,
 }: {
   city?: string;
   country?: string;
@@ -26,14 +27,19 @@ export function createPropertyQueryString({
   amenities?: string[];
   priceMin?: string;
   priceMax?: string;
+  polygon?: string;
 }) {
   const queryParams = new URLSearchParams();
 
   if (city) {
     queryParams.append('city', city as string);
   }
+
   if (country) {
     queryParams.append('country', country as string);
+  }
+  if (polygon) {
+    queryParams.append('polygon', polygon);
   }
 
   if (beds) {

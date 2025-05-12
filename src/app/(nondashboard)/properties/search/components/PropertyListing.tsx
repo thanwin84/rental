@@ -1,18 +1,44 @@
+import { propertyService } from '@/lib/services';
+import { createPropertyQueryString } from '@/utils';
 import PropertyCard from './PropertyCard';
 import PropertyListingPagination from './PropertyListingPagination';
-import { Location, Pagination } from '@/lib/types';
 
 type Props = {
   className?: string;
-  properties: Location[];
-  pagination: Pagination;
+  searchParams: Record<string, string | string[] | undefined>;
 };
 
-export default function PropertyListing({
+export default async function PropertyListing({
   className,
-  properties,
-  pagination,
+  searchParams,
 }: Props) {
+  const params = await searchParams;
+  const {
+    city,
+    country,
+    priceMax,
+    priceMin,
+    beds,
+    baths,
+    amenities,
+    propertyType,
+    polygon,
+  } = params;
+
+  const { properties, pagination } = await propertyService.getProperties(
+    createPropertyQueryString({
+      city: city as string,
+      country: country as string,
+      priceMax: priceMax as string,
+      priceMin: priceMin as string,
+      baths: baths as string,
+      beds: beds as string,
+      amenities: amenities as string[],
+      propertyType: propertyType as string[],
+      polygon: polygon as string,
+    })
+  );
+
   const { totalItems, totalPages, currentPage } = pagination;
   if (properties.length === 0) {
     return (
@@ -24,9 +50,15 @@ export default function PropertyListing({
   }
   return (
     <div className={`${className}`}>
-      <h2 className='mb-2 text-slate-700'>
-        {totalItems} places in Dhaka, Bangladesh
-      </h2>
+      {polygon ? (
+        <h2 className='mb-2 text-slate-700'>
+          {totalItems} places in this area.
+        </h2>
+      ) : (
+        <h2 className='mb-2 text-slate-700'>
+          {totalItems} places in {city}, {country}
+        </h2>
+      )}
       {properties?.map((property) => (
         <PropertyCard
           className='mb-2'

@@ -21,6 +21,8 @@ export default function SearchBar({ className }: { className?: string }) {
       const [city, country] = filterState.location.split(',');
       params.set('city', city.trim());
       params.set('country', country.trim());
+      params.delete('polygon');
+      setFilter('polygon', '');
     } else {
       params.delete('city');
       params.delete('country');

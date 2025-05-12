@@ -11,6 +11,7 @@ export type Filter = {
   maxPriceSetter: number;
   location: string;
   amenities: string[];
+  polygon: string;
 };
 type Store = {
   favouriteIds: string[];
@@ -30,6 +31,7 @@ const defaultFilterState: Filter = {
   maxPriceSetter: 0,
   location: 'Anywhere',
   amenities: [],
+  polygon: '',
 };
 
 export const usePropertyStore = create<Store>()(
