@@ -3,7 +3,7 @@ import { PropertyType } from '../schemas/property';
 import { apiResponse } from '@/utils/apiResponse';
 import { connectDb } from '@/db_connect/dbConnect';
 import { Location } from '@/models';
-import { Pagination } from '../types';
+import { Pagination, SingleProperTy } from '@/lib/types';
 
 connectDb();
 export const createProperty = async (data: PropertyType) => {
@@ -237,7 +237,9 @@ export const getPropertiesWithinMapBounds = async (
   return properties;
 };
 
-export const getSingleProperty = async (propertyId: string) => {
+export const getSingleProperty = async (
+  propertyId: string
+): Promise<SingleProperTy> => {
   const property = await Property.findById(propertyId).populate('locationId');
   const propertyObj = property.toObject();
   propertyObj.location = propertyObj.locationId;

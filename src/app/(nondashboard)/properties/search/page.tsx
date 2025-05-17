@@ -1,10 +1,12 @@
 import {
   FiltersBar,
+  FilterSidebar,
   PropertyListing,
   PropertyListingSkeleton,
 } from '@/app/(nondashboard)/properties/search/components';
 import { Suspense } from 'react';
 import MapContainer from './components/MapContainer';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
@@ -19,29 +21,32 @@ export default async function Search({ searchParams }: Props) {
   const searchParamsKey = JSON.stringify(_searchParams);
 
   return (
-    <div className='w-full relative'>
-      <FiltersBar className='fixed z-10 top-15' />
-      <div className='w-full flex mt-14 h-screen'>
-        <div className=' relative ml-2 '>
-          <Suspense
-            fallback={
-              <div className='fixed h-screen bg-gray-100 flex items-center justify-center'>
-                Loading map...
-              </div>
-            }
-          >
-            <MapContainer city={city as string} country={country as string} />
-          </Suspense>
-        </div>
-        <div className='w-[30%]  ml-auto'>
-          <Suspense
-            fallback={<PropertyListingSkeleton />}
-            key={searchParamsKey}
-          >
-            <PropertyListing searchParams={searchParams} />
-          </Suspense>
+    <SidebarProvider>
+      <FilterSidebar className='mt-6' />
+      <div className='w-full relative'>
+        <FiltersBar className='fixed z-10 top-15' />
+        <div className='w-full flex mt-14 h-screen'>
+          <div className=' relative ml-2 '>
+            <Suspense
+              fallback={
+                <div className='fixed h-screen bg-gray-100 flex items-center justify-center'>
+                  Loading map...
+                </div>
+              }
+            >
+              <MapContainer city={city as string} country={country as string} />
+            </Suspense>
+          </div>
+          <div className='w-[30%]  ml-auto'>
+            <Suspense
+              fallback={<PropertyListingSkeleton />}
+              key={searchParamsKey}
+            >
+              <PropertyListing searchParams={searchParams} />
+            </Suspense>
+          </div>
         </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }
