@@ -5,4 +5,5 @@ import { Lease } from './lease.model';
 import Application from './application.model';
 import Review from './review.model';
 import Payment from './payment.model';
+export { FavouriteProperty } from './favouriteProperty';
 export { User, Location, Property, Lease, Application, Review, Payment };
