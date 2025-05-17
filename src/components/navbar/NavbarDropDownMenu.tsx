@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { logout } from '@/app/actions';
 import { useAuthStore } from '@/lib/store/auth';
+import { usePropertyStore } from '@/lib/store';
 
 type Props = {
   className?: string;
@@ -33,11 +34,13 @@ const links: { pathName: string; path?: string }[] = [
 export default function NavbarDropDownMenu({ className }: Props) {
   const router = useRouter();
   const authStore = useAuthStore();
+  const { resetState: resetPropertyState } = usePropertyStore();
   const role = authStore.user?.role;
   async function handleLogout() {
     try {
       await logout();
       authStore.logout();
+      resetPropertyState();
       toast.success("You've logged out successfully");
       router.push('/login');
     } catch {
