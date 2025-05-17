@@ -5,7 +5,7 @@ import PropertyListingPagination from './PropertyListingPagination';
 
 type Props = {
   className?: string;
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function PropertyListing({
@@ -71,7 +71,7 @@ export default async function PropertyListing({
           imgSrc={property.property.photoUrLs[0]}
           beds={property.property.beds}
           baths={property.property.baths}
-          id={property._id}
+          id={property.property._id}
         />
       ))}
       <PropertyListingPagination
