@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 
 type Props = {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export default async function Search({ searchParams }: Props) {

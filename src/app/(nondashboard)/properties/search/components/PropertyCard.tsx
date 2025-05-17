@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/card';
 import Link from 'next/link';
 import { usePropertyStore } from '@/lib/store';
+import { addToFavourite } from '@/lib/services/favourites';
 
 type Props = {
   className?: string;
@@ -40,6 +41,7 @@ export default function PropertyCard({
   const { favouriteIds, toggleFavourite } = usePropertyStore();
   function handleOnToggleFavouriteId(id: string) {
     toggleFavourite(id);
+    addToFavourite(id);
   }
   return (
     <Card

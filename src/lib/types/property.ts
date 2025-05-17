@@ -67,3 +67,13 @@ export type PropertyOnMap = {
 export type SingleProperTy = Omit<Property, 'locationId'> & {
   location: Omit<Location, 'property'>;
 };
+
+export type FavouritePropertyResponse = {
+  properties: Omit<Property, 'propertyId'> &
+    {
+      location: Omit<Location, 'property'>;
+    }[];
+  pagination: Pagination;
+};
+
+export type FavouriteIdListApiReponse = { favouritesIdList: string[] };

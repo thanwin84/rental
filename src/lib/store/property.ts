@@ -15,10 +15,12 @@ export type Filter = {
 };
 type Store = {
   favouriteIds: string[];
+  setFavouriteIds: (ids: string[]) => void;
   toggleFavourite: (id: string) => void;
   filterState: Filter;
   setFilter: (key: keyof Filter, value: Filter[keyof Filter]) => void;
   clearFilter: () => void;
+  resetState: () => void;
 };
 
 const defaultFilterState: Filter = {
@@ -39,6 +41,7 @@ export const usePropertyStore = create<Store>()(
     (set, get) => ({
       favouriteIds: [],
       filterState: defaultFilterState,
+      setFavouriteIds: (ids: string[]) => set({ favouriteIds: ids }),
       setFilter: (key, value) =>
         set((state) => ({
           filterState: { ...state.filterState, [key]: value },
@@ -54,6 +57,8 @@ export const usePropertyStore = create<Store>()(
             : [...current, id],
         });
       },
+      resetState: () =>
+        set({ filterState: defaultFilterState, favouriteIds: [] }),
     }),
     {
       name: 'property-storage',
