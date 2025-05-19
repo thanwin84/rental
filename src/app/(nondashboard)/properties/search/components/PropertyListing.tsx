@@ -1,68 +1,72 @@
-import { propertyService } from '@/lib/services';
-import { createPropertyQueryString } from '@/utils';
+'use client';
 import PropertyCard from './PropertyCard';
-import PropertyListingPagination from './PropertyListingPagination';
+import { PropertyListApiResponse } from '@/lib/types';
+import { useCallback, useEffect, useState } from 'react';
+import PropertyLoadingSkeleton from './PropertyLoadingSkeleton';
+import { useInView } from 'react-intersection-observer';
+import { parsePropertySearchParams } from '@/utils';
+import { getPropertiesAction } from '@/app/actions';
 
 type Props = {
   className?: string;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  propertyListData: PropertyListApiResponse;
+  searchParams: Record<string, string | string[] | undefined>;
 };
 
-export default async function PropertyListing({
+export default function PropertyListing({
   className,
+  propertyListData,
   searchParams,
 }: Props) {
-  const params = await searchParams;
-  const {
-    city,
-    country,
-    priceMax,
-    priceMin,
-    beds,
-    baths,
-    amenities,
-    propertyType,
-    polygon,
-  } = params;
-
-  const { properties, pagination } = await propertyService.getProperties(
-    createPropertyQueryString({
-      city: city as string,
-      country: country as string,
-      priceMax: priceMax as string,
-      priceMin: priceMin as string,
-      baths: baths as string,
-      beds: beds as string,
-      amenities: amenities as string[],
-      propertyType: propertyType as string[],
-      polygon: polygon as string,
-    })
+  const [properties, setProperties] = useState(propertyListData.properties);
+  const [hasMore, setHasMore] = useState<boolean>(
+    propertyListData.pagination.totalPages > 0
   );
+  const [page, setPage] = useState<number>(1);
+  const [ref, inView] = useInView();
+  const [isLoading, setIsLoading] = useState(false);
+  const searchingOnMap = searchParams.polygon as string;
+  const city = searchParams.city as string;
+  const country = searchParams.country as string;
 
-  const { totalItems, totalPages, currentPage } = pagination;
-  if (properties.length === 0) {
-    return (
-      <div className='text-center mt-10 text-gray-500'>
-        <p className='text-lg font-semibold'>No properties found</p>
-        <p className='text-sm'>Try adjusting your search or filters.</p>
-      </div>
-    );
-  }
+  const loadMore = useCallback(async () => {
+    if (isLoading || !hasMore) return;
+    setIsLoading(true);
+    try {
+      const params = parsePropertySearchParams(searchParams);
+      const nextPage = page + 1;
+      const data = await getPropertiesAction({
+        ...params,
+        page: nextPage.toString(),
+      });
+      setProperties((prev) => [...prev, ...data.properties]);
+      setHasMore(data.pagination.currentPage < data.pagination.totalPages);
+      setPage(nextPage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isLoading, hasMore, searchParams, page]);
+  useEffect(() => {
+    if (inView) {
+      loadMore();
+    }
+  }, [inView, loadMore]);
+
   return (
     <div className={`${className}`}>
-      {polygon ? (
+      {searchingOnMap ? (
         <h2 className='mb-2 text-slate-700'>
-          {totalItems} places in this area.
+          {propertyListData.pagination.totalItems} places in this area.
         </h2>
       ) : (
         <h2 className='mb-2 text-slate-700'>
-          {totalItems} places in {city}, {country}
+          {propertyListData.pagination.totalItems} places in {city}, {country}
         </h2>
       )}
       {properties?.map((property) => (
         <PropertyCard
           className='mb-2'
-          key={property._id}
+          key={property.property._id}
           title={property.property.name}
           location='Dhaka, Bangladesh'
           rating={property.property.averageRating}
@@ -74,10 +78,11 @@ export default async function PropertyListing({
           id={property.property._id}
         />
       ))}
-      <PropertyListingPagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-      />
+      {hasMore && (
+        <div ref={ref}>
+          <PropertyLoadingSkeleton />
+        </div>
+      )}
     </div>
   );
 }

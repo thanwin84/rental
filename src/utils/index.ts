@@ -66,3 +66,28 @@ export function createPropertyQueryString({
   }
   return queryParams.toString();
 }
+
+export function parsePropertySearchParams(
+  searchParams: Record<string, string | string[] | undefined>
+) {
+  const toArray = (value: string | string[] | undefined): string[] =>
+    Array.isArray(value) ? value : value ? [value] : [];
+
+  return {
+    priceMin: searchParams.priceMin as string,
+    priceMax: searchParams.priceMax as string,
+    baths: searchParams.baths as string,
+    beds: searchParams.beds as string,
+    propertyType: toArray(searchParams.propertyType),
+    squareFeetMin: searchParams.squareFeetMin as string,
+    squareFeetMax: searchParams.squareFeetMax as string,
+    amenities: toArray(searchParams.amenities),
+    latitude: searchParams.latitude as string,
+    longitude: searchParams.longitude as string,
+    limit: searchParams.limit as string,
+    page: searchParams.page as string,
+    city: searchParams.city as string,
+    country: searchParams.country as string,
+    polygon: searchParams.polygon as string,
+  };
+}

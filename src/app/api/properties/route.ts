@@ -59,7 +59,39 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const result = await getProperties(searchParams);
+  const priceMin = searchParams.get('priceMin') as string;
+  const priceMax = searchParams.get('priceMax') as string;
+  const baths = searchParams.get('baths') as string;
+  const beds = searchParams.get('beds') as string;
+  const propertyType = searchParams.getAll('propertyType');
+  const squareFeetMin = searchParams.get('squareFeetMin') as string;
+  const squareFeetMax = searchParams.get('squareFeetMax') as string;
+  const amenities = searchParams.getAll('amenities');
+  const latitude = searchParams.get('latitude') as string;
+  const longitude = searchParams.get('longitude') as string;
+  const limit = searchParams.get('limit') as string;
+  const page = searchParams.get('page') as string;
+  const city = searchParams.get('city') as string;
+  const country = searchParams.get('country') as string;
+  const polygon = searchParams.get('polygon') as string;
+
+  const result = await getProperties({
+    priceMin,
+    priceMax,
+    baths,
+    beds,
+    propertyType,
+    squareFeetMin,
+    squareFeetMax,
+    city,
+    amenities,
+    limit,
+    page,
+    latitude,
+    longitude,
+    country,
+    polygon,
+  });
   return NextResponse.json({
     status: 200,
     data: result,

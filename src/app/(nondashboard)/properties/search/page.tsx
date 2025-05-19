@@ -1,15 +1,12 @@
 import {
   FiltersBar,
   FilterSidebar,
-  PropertyListing,
   PropertyListingSkeleton,
 } from '@/app/(nondashboard)/properties/search/components';
 import { Suspense } from 'react';
 import MapContainer from './components/MapContainer';
 import { SidebarProvider } from '@/components/ui/sidebar';
-
-export const dynamic = 'force-dynamic';
-export const fetchCache = 'force-no-store';
+import PropertyListingContainer from './components/PropertyListingContainer';
 
 type Props = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -18,7 +15,6 @@ type Props = {
 export default async function Search({ searchParams }: Props) {
   const _searchParams = await searchParams;
   const { city, country } = _searchParams;
-  const searchParamsKey = JSON.stringify(_searchParams);
 
   return (
     <SidebarProvider>
@@ -39,10 +35,10 @@ export default async function Search({ searchParams }: Props) {
           </div>
           <div className='w-[30%]  ml-auto'>
             <Suspense
+              key={JSON.stringify(_searchParams)}
               fallback={<PropertyListingSkeleton />}
-              key={searchParamsKey}
             >
-              <PropertyListing searchParams={searchParams} />
+              <PropertyListingContainer searchParams={_searchParams} />
             </Suspense>
           </div>
         </div>
