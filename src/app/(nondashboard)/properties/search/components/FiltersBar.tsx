@@ -33,7 +33,15 @@ export default function FiltersBar({ className }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathName = usePathname();
+
   function handleSelectChange(key: keyof Filter, value: string) {
+    if (value === 'any') {
+      setFilter(key, value);
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete(key);
+      router.push(`${pathName}?${params.toString()}`);
+      return;
+    }
     setFilter(key, value);
     const params = new URLSearchParams(searchParams.toString());
     params.set(key, value);
