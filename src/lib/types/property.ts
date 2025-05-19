@@ -7,7 +7,7 @@ export type AmenityValue = (typeof amenity)[AmenityType];
 export type PropertyTypeKey = keyof typeof propertyType;
 export type PropertyTypeValue = (typeof propertyType)[PropertyTypeKey];
 
-export interface Property {
+export type Property = {
   _id: string;
   name: string;
   description: string;
@@ -29,27 +29,18 @@ export interface Property {
   ownerId: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface Location {
-  _id: string;
-  propertyId: string;
-  address?: string;
+export type Location = {
+  coordinates: [number, number];
   city: string;
-  state?: string;
   country: string;
-  location: {
-    type: 'Point';
-    coordinates: [number, number]; // [longitude, latitude]
-  };
-  createdAt: string;
-  updatedAt: string;
-  distance: number;
-  property: Property;
-}
+  address?: string;
+  state?: string;
+};
 
-export type LocationResponse = {
-  properties: Location[];
+export type PropertyListApiResponse = {
+  properties: { property: Property; location: Location }[];
   pagination: Pagination;
 };
 export type PropertyOnMap = {

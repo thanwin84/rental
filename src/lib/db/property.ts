@@ -16,23 +16,43 @@ export const createProperty = async (data: PropertyType) => {
   });
 };
 
-export const getProperties = async (searchParams: URLSearchParams) => {
-  const priceMin = searchParams.get('priceMin');
-  const priceMax = searchParams.get('priceMax');
-  const baths = searchParams.get('baths');
-  const beds = searchParams.get('beds');
-  const propertyType = searchParams.getAll('propertyType');
-  const squareFeetMin = searchParams.get('squareFeetMin');
-  const squareFeetMax = searchParams.get('squareFeetMax');
-  const amenities = searchParams.getAll('amenities');
-  const latitude = searchParams.get('latitude');
-  const longitude = searchParams.get('longitude');
-  const limit = Number(searchParams.get('limit')) || 10;
-  const page = Number(searchParams.get('page')) || 1;
-  const skips = (page - 1) * limit;
-  const city = searchParams.get('city');
-  const country = searchParams.get('country');
-  const polygon = searchParams.get('polygon');
+export const getProperties = async ({
+  priceMin,
+  priceMax,
+  baths,
+  beds,
+  propertyType,
+  squareFeetMin,
+  squareFeetMax,
+  amenities,
+  latitude,
+  longitude,
+  limit = '3',
+  page = '1',
+  city,
+  country,
+  polygon,
+}: {
+  priceMin?: string;
+  priceMax?: string;
+  baths?: string;
+  beds?: string;
+  propertyType?: string[];
+  squareFeetMin?: string;
+  squareFeetMax?: string;
+  amenities: string[];
+  latitude?: string;
+  longitude?: string;
+  limit?: string;
+  page?: string;
+  city?: string;
+  country?: string;
+  polygon?: string;
+}) => {
+  const parsedLimit = Number(limit) || 3;
+  const parsedPage = Number(page) || 1;
+
+  const skips = (parsedPage - 1) * parsedLimit;
 
   let polygonCoordinates;
   if (polygon) {
@@ -56,10 +76,10 @@ export const getProperties = async (searchParams: URLSearchParams) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const query: any = {};
   if (city) {
-    query.city = { $regex: city, $options: 'i' };
+    query['location.city'] = { $regex: city, $options: 'i' };
   }
   if (country) {
-    query.country = { $regex: country, $options: 'i' };
+    query['location.country'] = { $regex: country, $options: 'i' };
   }
   if (priceMin || priceMax) {
     query['property.pricePerMonth'] = {};
@@ -82,7 +102,7 @@ export const getProperties = async (searchParams: URLSearchParams) => {
     query['property.beds'] = Number(beds);
   }
 
-  if (propertyType.length > 0) {
+  if (propertyType && propertyType.length > 0) {
     query['property.propertyType'] = { $in: propertyType };
   }
 
@@ -101,8 +121,14 @@ export const getProperties = async (searchParams: URLSearchParams) => {
   const addFieldStage = {
     $addFields: {
       property: { $first: '$property' },
+      'location.coordinates': '$location.coordinates',
+      'location.city': '$city',
+      'location.address': '$address',
+      'location.country': '$country',
+      'location.state': '$state',
     },
   };
+
   const queryStage = {
     $match: query,
   };
@@ -110,14 +136,22 @@ export const getProperties = async (searchParams: URLSearchParams) => {
   const pipeline: any = [
     lookupStage,
     addFieldStage,
+    {
+      $project: {
+        property: 1,
+        location: 1,
+        _id: 0,
+      },
+    },
     queryStage,
     {
       $skip: skips,
     },
     {
-      $limit: limit,
+      $limit: parsedLimit,
     },
   ];
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const countPipeline: any = [lookupStage, addFieldStage, queryStage];
 
@@ -159,15 +193,15 @@ export const getProperties = async (searchParams: URLSearchParams) => {
     { $count: 'total' },
   ]);
   const total = countResult[0]?.total || 0;
-  const totalPages = Math.ceil(total / limit);
+  const totalPages = Math.ceil(total / Number(limit));
 
   const pagination: Pagination = {
     totalItems: total,
     totalPages,
-    currentPage: page,
+    currentPage: Number(page),
   };
   return {
-    properties: properties,
+    properties: JSON.parse(JSON.stringify(properties)),
     pagination,
   };
 };
@@ -251,3 +285,70 @@ export const deletePropertyById = async (propertyId: string) => {
   const reuslt = await Property.findByIdAndDelete(propertyId);
   await Location.deleteOne({ _id: reuslt.locationId });
 };
+
+// export const getFavouriteProperties = async(userId: string)=> {
+//   const page = parseInt(searchParams.get('page') || '1');
+//       const limit = parseInt(searchParams.get('limit') || '10');
+//       const skip = (page - 1) * limit;
+
+//       if (!user) {
+//         return NextResponse.json(
+//           { message: 'You are not authorized to perform this action' },
+//           { status: 401 }
+//         );
+//       }
+
+//       const properties = await FavouriteProperty.aggregate([
+//         {
+//           $match: {
+//             userId: new mongoose.Types.ObjectId(user.userId),
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: 'properties',
+//             localField: 'propertyId',
+//             foreignField: '_id',
+//             as: 'property',
+//           },
+//         },
+//         {
+//           $addFields: {
+//             property: { $first: '$property' },
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: 'locations',
+//             localField: 'property.locationId',
+//             foreignField: '_id',
+//             as: 'location',
+//           },
+//         },
+//         {
+//           $addFields: {
+//             'property.location': { $first: '$location' },
+//           },
+//         },
+//         {
+//           $project: {
+//             property: 1,
+//           },
+//         },
+//         {
+//           $skip: skip,
+//         },
+//         {
+//           $limit: limit,
+//         },
+//       ]);
+//       const totalCount = await FavouriteProperty.countDocuments({
+//         userId: user.userId,
+//       });
+//       const totalPages = Math.floor(totalCount / limit);
+//       const pagination: Pagination = {
+//         totalItems: totalCount,
+//         currentPage: page,
+//         totalPages: totalPages,
+//       };
+// }

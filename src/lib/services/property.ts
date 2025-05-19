@@ -1,12 +1,12 @@
 import customFetch from '@/utils/customFetch';
-import { LocationResponse, PropertyOnMap } from '../types';
+import { PropertyListApiResponse, PropertyOnMap } from '../types';
 
 export const createProperty = (formData: FormData) =>
   customFetch.post('/api/properties', formData);
 
 export const getProperties = (
   queryParams?: string
-): Promise<LocationResponse> =>
+): Promise<PropertyListApiResponse> =>
   customFetch.get(`/api/properties?${queryParams}`);
 
 export const getPropertiesWithin = (
