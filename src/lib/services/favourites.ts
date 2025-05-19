@@ -7,3 +7,6 @@ export const addToFavourite = (propertyId: string) =>
   });
 export const getFavouritesIdList = (): Promise<FavouriteIdListApiReponse> =>
   customFetch.get('/api/favourites/favouritesIdList');
+
+export const getFavouriteProperties = (params: string) =>
+  customFetch.get(`/api/favourites?${params}`);

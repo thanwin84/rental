@@ -1,9 +1,8 @@
 import { connectDb } from '@/db_connect/dbConnect';
 import { getUserFromToken } from '@/lib/auth';
-import { Pagination } from '@/lib/types';
+import { getFavouriteProperties } from '@/lib/db';
 import { FavouriteProperty } from '@/models';
 
-import mongoose from 'mongoose';
 import { NextRequest, NextResponse } from 'next/server';
 connectDb();
 export async function POST(request: NextRequest) {
@@ -57,8 +56,7 @@ export async function GET(request: NextRequest) {
     const user = await getUserFromToken(request);
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
-    const skip = (page - 1) * limit;
+    const limit = parseInt(searchParams.get('limit') || '6');
 
     if (!user) {
       return NextResponse.json(
@@ -67,66 +65,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const properties = await FavouriteProperty.aggregate([
-      {
-        $match: {
-          userId: new mongoose.Types.ObjectId(user.userId),
-        },
-      },
-      {
-        $lookup: {
-          from: 'properties',
-          localField: 'propertyId',
-          foreignField: '_id',
-          as: 'property',
-        },
-      },
-      {
-        $addFields: {
-          property: { $first: '$property' },
-        },
-      },
-      {
-        $lookup: {
-          from: 'locations',
-          localField: 'property.locationId',
-          foreignField: '_id',
-          as: 'location',
-        },
-      },
-      {
-        $addFields: {
-          'property.location': { $first: '$location' },
-        },
-      },
-      {
-        $project: {
-          property: 1,
-        },
-      },
-      {
-        $skip: skip,
-      },
-      {
-        $limit: limit,
-      },
-    ]);
-    const totalCount = await FavouriteProperty.countDocuments({
+    const result = await getFavouriteProperties({
       userId: user.userId,
+      page,
+      limit,
     });
-    const totalPages = Math.floor(totalCount / limit);
-    const pagination: Pagination = {
-      totalItems: totalCount,
-      currentPage: page,
-      totalPages: totalPages,
-    };
 
     return NextResponse.json({
       status: 200,
-      data: {
-        properties,
-        pagination,
-      },
+      data: result,
     });
   } catch (error) {
     console.error('[GET_FAVOURITES_ERROR]', error);

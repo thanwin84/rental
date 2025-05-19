@@ -1,6 +1,8 @@
 'use server';
 
-import { getProperties } from '@/lib/db';
+import { getUserFromToken } from '@/lib/auth';
+import { getFavouriteProperties, getProperties } from '@/lib/db';
+import { redirect } from 'next/navigation';
 
 export const getPropertiesAction = async ({
   priceMin,
@@ -53,4 +55,22 @@ export const getPropertiesAction = async ({
     polygon,
   });
   return result;
+};
+
+export const getFavouritePropertiesAction = async ({
+  page = 1,
+  limit = 6,
+}: {
+  page?: number;
+  limit?: number;
+}) => {
+  const user = await getUserFromToken();
+  if (!user) {
+    redirect('/login');
+  }
+  return await getFavouriteProperties({
+    userId: user.userId,
+    page: page,
+    limit: limit,
+  });
 };

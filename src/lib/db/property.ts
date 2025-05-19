@@ -1,9 +1,10 @@
-import { Property } from '@/models';
+import { FavouriteProperty, Property } from '@/models';
 import { PropertyType } from '../schemas/property';
 import { apiResponse } from '@/utils/apiResponse';
 import { connectDb } from '@/db_connect/dbConnect';
 import { Location } from '@/models';
 import { Pagination, SingleProperTy } from '@/lib/types';
+import mongoose from 'mongoose';
 
 connectDb();
 export const createProperty = async (data: PropertyType) => {
@@ -286,69 +287,89 @@ export const deletePropertyById = async (propertyId: string) => {
   await Location.deleteOne({ _id: reuslt.locationId });
 };
 
-// export const getFavouriteProperties = async(userId: string)=> {
-//   const page = parseInt(searchParams.get('page') || '1');
-//       const limit = parseInt(searchParams.get('limit') || '10');
-//       const skip = (page - 1) * limit;
+export const getFavouriteProperties = async ({
+  userId,
+  page = 1,
+  limit = 6,
+}: {
+  userId: string;
+  page?: number;
+  limit?: number;
+}) => {
+  const skip = (page - 1) * limit;
 
-//       if (!user) {
-//         return NextResponse.json(
-//           { message: 'You are not authorized to perform this action' },
-//           { status: 401 }
-//         );
-//       }
+  const properties = await FavouriteProperty.aggregate([
+    {
+      $match: {
+        userId: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: 'properties',
+        localField: 'propertyId',
+        foreignField: '_id',
+        as: 'property',
+      },
+    },
+    {
+      $addFields: {
+        property: { $first: '$property' },
+      },
+    },
+    {
+      $lookup: {
+        from: 'locations',
+        localField: 'property.locationId',
+        foreignField: '_id',
+        as: 'locationData',
+      },
+    },
+    {
+      $addFields: {
+        locationData: { $first: '$locationData' },
+      },
+    },
 
-//       const properties = await FavouriteProperty.aggregate([
-//         {
-//           $match: {
-//             userId: new mongoose.Types.ObjectId(user.userId),
-//           },
-//         },
-//         {
-//           $lookup: {
-//             from: 'properties',
-//             localField: 'propertyId',
-//             foreignField: '_id',
-//             as: 'property',
-//           },
-//         },
-//         {
-//           $addFields: {
-//             property: { $first: '$property' },
-//           },
-//         },
-//         {
-//           $lookup: {
-//             from: 'locations',
-//             localField: 'property.locationId',
-//             foreignField: '_id',
-//             as: 'location',
-//           },
-//         },
-//         {
-//           $addFields: {
-//             'property.location': { $first: '$location' },
-//           },
-//         },
-//         {
-//           $project: {
-//             property: 1,
-//           },
-//         },
-//         {
-//           $skip: skip,
-//         },
-//         {
-//           $limit: limit,
-//         },
-//       ]);
-//       const totalCount = await FavouriteProperty.countDocuments({
-//         userId: user.userId,
-//       });
-//       const totalPages = Math.floor(totalCount / limit);
-//       const pagination: Pagination = {
-//         totalItems: totalCount,
-//         currentPage: page,
-//         totalPages: totalPages,
-//       };
-// }
+    {
+      $addFields: {
+        location: {
+          coordinates: '$locationData.location.coordinates',
+          city: '$locationData.city',
+          country: '$locationData.country',
+          address: '$locationData.address',
+          state: '$locationData.state',
+        },
+      },
+    },
+    {
+      $skip: skip,
+    },
+    {
+      $limit: limit,
+    },
+
+    {
+      $project: {
+        locationData: 0,
+        propertyId: 0,
+        userId: 0,
+        _id: 0,
+        __v: 0,
+      },
+    },
+  ]);
+  const totalCount = await FavouriteProperty.countDocuments({
+    userId: userId,
+  });
+  const totalPages = Math.ceil(totalCount / limit);
+  const pagination: Pagination = {
+    totalItems: totalCount,
+    currentPage: page,
+    totalPages: totalPages,
+  };
+  return {
+    properties: JSON.parse(JSON.stringify(properties)),
+    pagination,
+  };
+};
