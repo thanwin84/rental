@@ -33,6 +33,7 @@ export const getProperties = async ({
   city,
   country,
   polygon,
+  userId,
 }: {
   priceMin?: string;
   priceMax?: string;
@@ -41,7 +42,7 @@ export const getProperties = async ({
   propertyType?: string[];
   squareFeetMin?: string;
   squareFeetMax?: string;
-  amenities: string[];
+  amenities?: string[];
   latitude?: string;
   longitude?: string;
   limit?: string;
@@ -49,6 +50,7 @@ export const getProperties = async ({
   city?: string;
   country?: string;
   polygon?: string;
+  userId?: string;
 }) => {
   const parsedLimit = Number(limit) || 3;
   const parsedPage = Number(page) || 1;
@@ -102,12 +104,14 @@ export const getProperties = async ({
   if (beds) {
     query['property.beds'] = Number(beds);
   }
-
+  if (userId) {
+    query['property.ownerId'] = new mongoose.Types.ObjectId(userId);
+  }
   if (propertyType && propertyType.length > 0) {
     query['property.propertyType'] = { $in: propertyType };
   }
 
-  if (amenities.length > 0) {
+  if (amenities && amenities.length > 0) {
     query['property.amenities'] = { $all: amenities };
   }
 

@@ -13,7 +13,7 @@ type Props = {
   pagination: PaginationType;
 };
 
-export default function FavouritePropertyListingPagination({
+export default function PropertyListingPagination({
   className,
   pagination,
 }: Props) {
@@ -34,13 +34,13 @@ export default function FavouritePropertyListingPagination({
   const isLastPage = currentPage === totalPages;
 
   return (
-    <Pagination className={`mt-4 justify-center ${className || ''}`}>
+    <Pagination className={`mt-6 py-4 justify-center ${className || ''}`}>
       <PaginationContent className='flex gap-4'>
         <PaginationItem>
           <button
             disabled={isFirstPage}
             onClick={() => handlePageChange(currentPage - 1)}
-            className={`px-4 py-2 rounded-md border text-sm font-medium transition 
+            className={`px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 bg-white transition-colors 
               ${
                 isFirstPage
                   ? 'opacity-50 cursor-not-allowed'
@@ -55,7 +55,7 @@ export default function FavouritePropertyListingPagination({
           <button
             disabled={isLastPage}
             onClick={() => handlePageChange(currentPage + 1)}
-            className={`px-4 py-2 rounded-md border text-sm font-medium transition 
+            className={`px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 bg-white transition-colors 
               ${
                 isLastPage
                   ? 'opacity-50 cursor-not-allowed'

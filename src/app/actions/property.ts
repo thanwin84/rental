@@ -56,6 +56,23 @@ export const getPropertiesAction = async ({
   });
   return result;
 };
+export const getMyPropertiesAction = async ({
+  page,
+  limit = '6',
+}: {
+  page?: string;
+  limit?: string;
+}) => {
+  const user = await getUserFromToken();
+  if (!user) {
+    redirect('/login');
+  }
+  return await getProperties({
+    userId: user.userId,
+    page: page,
+    limit: limit,
+  });
+};
 
 export const getFavouritePropertiesAction = async ({
   page = 1,
