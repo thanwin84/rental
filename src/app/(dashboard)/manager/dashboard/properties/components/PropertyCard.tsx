@@ -1,12 +1,12 @@
-import { Bath, Bed, Star, Waves } from 'lucide-react';
+import { Bath, Bed, Star, Waves, Pencil } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from '@/components/ui/card';
-import Link from 'next/link';
 
 type Props = {
   className?: string;
@@ -47,6 +47,12 @@ export default function PropertyCard({
           className='object-cover'
           sizes='100vw'
         />
+        <Link
+          href={`/properties/edit/${id}`}
+          className='absolute top-2 right-2 bg-white text-slate-800 p-1.5 rounded-full shadow-md hover:bg-slate-100'
+        >
+          <Pencil size={16} />
+        </Link>
       </CardHeader>
 
       <CardContent className='px-4  pb-2 space-y-1'>
