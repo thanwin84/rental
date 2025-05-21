@@ -13,13 +13,14 @@ import {
   AmenitiesAndHighlightsForm,
   AdditionInformationForm,
 } from '@/app/(dashboard)/manager/dashboard/create-property/components';
+import { SingleProperTy } from '@/lib/types';
 
 type Props = {
   className?: string;
   onFormSubmit: (form: FormData) => void;
   isPending: boolean;
   formType?: 'create' | 'edit';
-  initailData?: PropertyType;
+  initailData?: SingleProperTy;
 };
 
 export default function PropertyForm({
@@ -27,7 +28,9 @@ export default function PropertyForm({
   isPending = false,
   formType = 'create',
   initailData,
+  className,
 }: Props) {
+  console.log(initailData?.location);
   const form = useForm<PropertyType>({
     resolver: zodResolver(propertyZodSchema),
     defaultValues: {
@@ -44,6 +47,7 @@ export default function PropertyForm({
         baths: initailData?.property.baths || 0,
         squareFeet: initailData?.property.squareFeet || 0,
         isAvailable: initailData?.property.isAvailable || true,
+        propertyType: initailData?.property.propertyType,
       },
       location: {
         address: initailData?.location.address || '',
@@ -69,7 +73,7 @@ export default function PropertyForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onHandleSubmit)}
-        className='bg-white p-6 rounded-md shadow-md space-y-4'
+        className={`bg-white p-6 rounded-md shadow-md space-y-4 ${className}`}
       >
         <BasicInformationForm />
         <FeesForm />
@@ -78,7 +82,9 @@ export default function PropertyForm({
         <AdditionInformationForm />
         <div>
           <h2 className='text-xl font-semibold text-slate-800 mb-3'>Photos</h2>
-          <ImageUpload />
+          <ImageUpload
+            photoUrl={initailData?.property.photoUrLs[0] as string}
+          />
         </div>
         {isPending ? (
           <LoadingButton
@@ -90,7 +96,7 @@ export default function PropertyForm({
             type='submit'
             className='w-full bg-stone-700 hover:bg-stone-800 cursor-pointer'
           >
-            {formType === 'create' ? 'Create' : 'Edit'}
+            {formType === 'create' ? 'Create' : 'Update Changes'}
           </Button>
         )}
       </form>
