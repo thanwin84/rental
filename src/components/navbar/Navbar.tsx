@@ -10,6 +10,7 @@ import { usePathname } from 'next/navigation';
 export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const isLoggedIn = useAuthStore().isAuthenticated;
   const location = usePathname();
+  const editPage = location.includes('/edit');
   const isDashboard = location.includes('/dashboard');
 
   return (
@@ -23,7 +24,7 @@ export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
       >
         <AlignRight />
       </button>
-      {!isDashboard && (
+      {isDashboard || editPage ? null : (
         <p className='hidden md:block text-slate-300'>
           Discover your rental apartment with our advance search
         </p>
