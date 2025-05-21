@@ -5,8 +5,10 @@ import { connectDb } from '@/db_connect/dbConnect';
 import { Location } from '@/models';
 import { Pagination, SingleProperTy } from '@/lib/types';
 import mongoose from 'mongoose';
+import { getCoordinatesFromLocation } from '@/utils';
 
 connectDb();
+
 export const createProperty = async (data: PropertyType) => {
   const newProperty = await Property.create(data);
   return apiResponse({
@@ -16,7 +18,35 @@ export const createProperty = async (data: PropertyType) => {
     data: newProperty,
   });
 };
-
+export const updateProperty = async (
+  data: PropertyType,
+  propertyId: string
+) => {
+  const updatedProperty = await Property.findByIdAndUpdate(
+    propertyId,
+    { $set: data.property },
+    { new: true }
+  );
+  if (!updatedProperty) {
+    throw new Error('Property not found');
+  }
+  const { property, location } = data;
+  const { lng, lat } = await getCoordinatesFromLocation(location);
+  const locationData = await Location.findById(updatedProperty.locationId);
+  if (!locationData) {
+    throw new Error('Location data is not found');
+  }
+  locationData.address = location.address;
+  locationData.city = location.city;
+  locationData.country = location.country;
+  locationData.state = location.state;
+  locationData.location.coordinates = [lng, lat];
+  await locationData.save();
+  return {
+    property,
+    location,
+  };
+};
 export const getProperties = async ({
   priceMin,
   priceMax,
@@ -281,9 +311,19 @@ export const getSingleProperty = async (
 ): Promise<SingleProperTy> => {
   const property = await Property.findById(propertyId).populate('locationId');
   const propertyObj = property.toObject();
-  propertyObj.location = propertyObj.locationId;
+  const location = {
+    coordinates: propertyObj.locationId.location.coordinates,
+    city: propertyObj.locationId.city,
+    country: propertyObj.locationId.country,
+    state: propertyObj.locationId.state,
+    address: propertyObj.locationId.address,
+  };
   delete propertyObj.locationId;
-  return propertyObj;
+  const newProperty = {
+    property: propertyObj,
+    location: location,
+  };
+  return JSON.parse(JSON.stringify(newProperty));
 };
 
 export const deletePropertyById = async (propertyId: string) => {

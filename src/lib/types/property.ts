@@ -55,9 +55,7 @@ export type PropertyOnMap = {
   };
 };
 
-export type SingleProperTy = Omit<Property, 'locationId'> & {
-  location: Omit<Location, 'property'>;
-};
+export type SingleProperTy = { property: Property; location: Location };
 
 export type FavouritePropertyResponse = {
   properties: Omit<Property, 'propertyId'> &

@@ -13,3 +13,6 @@ export const getPropertiesWithin = (
   polygon: string
 ): Promise<PropertyOnMap[]> =>
   customFetch.get(`/api/properties/within?polygon=${polygon}`);
+
+export const updateProperty = (formData: FormData, propertyId: string) =>
+  customFetch.put(`/api/properties/${propertyId}`, formData);
