@@ -66,3 +66,11 @@ export type FavouritePropertyResponse = {
 };
 
 export type FavouriteIdListApiReponse = { favouritesIdList: string[] };
+
+export type FavouriteProperty = {
+  _id: string;
+  propertyId: string;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+};

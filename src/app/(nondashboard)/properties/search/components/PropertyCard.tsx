@@ -1,5 +1,4 @@
-'use client';
-import { Bath, Bed, Heart, Star, Waves } from 'lucide-react';
+import { Bath, Bed, Star, Waves } from 'lucide-react';
 import Image from 'next/image';
 import {
   Card,
@@ -8,8 +7,7 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import Link from 'next/link';
-import { usePropertyStore } from '@/lib/store';
-import { addToFavourite } from '@/lib/services/favourites';
+import FavouriteButton from './FavouriteButton';
 
 type Props = {
   className?: string;
@@ -38,11 +36,6 @@ export default function PropertyCard({
   pools = 0,
   id,
 }: Props) {
-  const { favouriteIds, toggleFavourite } = usePropertyStore();
-  function handleOnToggleFavouriteId(id: string) {
-    toggleFavourite(id);
-    addToFavourite(id);
-  }
   return (
     <Card
       className={` overflow-hidden border shadow-sm p-4 rounded-md ${className}`}
@@ -55,16 +48,7 @@ export default function PropertyCard({
           className='object-cover'
           sizes='100vw'
         />
-        <button
-          onClick={() => handleOnToggleFavouriteId(id)}
-          className='absolute cursor-pointer top-2 right-2 z-10 bg-white/80 rounded-full p-1 hover:bg-white transition'
-        >
-          {favouriteIds.includes(id) ? (
-            <Heart fill=' #f6339a' className='text-pink-500  w-5 h-5' />
-          ) : (
-            <Heart className='text-pink-500  w-5 h-5' />
-          )}
-        </button>
+        <FavouriteButton id={id} />
       </CardHeader>
 
       <CardContent className='px-4 pt-3 pb-2 space-y-1'>

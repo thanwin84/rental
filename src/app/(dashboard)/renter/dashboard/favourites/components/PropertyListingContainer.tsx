@@ -1,4 +1,4 @@
-import { getFavouritePropertiesAction } from '@/app/actions';
+import { getFavouritePropertiesAction } from '@/actions';
 import FavouritePropertyListingPagination from './FavouritePropertyListingPagination';
 import FavouritesPropertyListing from './FavouritesPropertyListing';
 

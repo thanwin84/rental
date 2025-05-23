@@ -1,5 +1,5 @@
 'use client';
-import { updateUserAction } from '@/app/actions';
+import { updateUserAction } from '@/actions';
 import FormInput from '@/components/FormInput';
 import { LoadingButton } from '@/components/LoadingButton';
 import { Button } from '@/components/ui/button';

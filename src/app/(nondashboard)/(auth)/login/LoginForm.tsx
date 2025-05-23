@@ -7,7 +7,7 @@ import { useActionState, useEffect, useState } from 'react';
 import { LoadingButton } from '@/components/LoadingButton';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { loginAction } from '@/app/actions';
+import { loginAction } from '@/actions';
 import { useAuthStore } from '@/lib/store/auth';
 
 export default function LoginForm() {

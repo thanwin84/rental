@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { logout } from '@/app/actions';
+import { logout } from '@/actions';
 import { useAuthStore } from '@/lib/store/auth';
 import { usePropertyStore } from '@/lib/store';
 

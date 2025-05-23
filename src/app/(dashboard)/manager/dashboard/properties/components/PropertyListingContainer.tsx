@@ -1,4 +1,4 @@
-import { getMyPropertiesAction } from '@/app/actions';
+import { getMyPropertiesAction } from '@/actions';
 import PropertyListing from './PropertyListing';
 import PropertyListingPagination from './PropertyListingPagination';
 

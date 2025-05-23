@@ -9,6 +9,7 @@ import PriceRangeSlider from './PriceRangeSlider';
 import AmenityFilter from './AmenityFilter';
 import MapView from './MapView';
 import PropertyListingSkeleton from './PropertyListingSkeleton';
+import FavouriteButton from './FavouriteButton';
 export {
   FilterSidebar,
   FiltersBar,
@@ -21,4 +22,5 @@ export {
   AmenityFilter,
   MapView,
   PropertyListingSkeleton,
+  FavouriteButton,
 };

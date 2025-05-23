@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from 'use-debounce';
 import customFetch from '@/utils/customFetch';
-import { signupAction } from '@/app/actions';
+import { signupAction } from '@/actions';
 
 export default function SignupForm() {
   const [state, action, pending] = useActionState(signupAction, undefined);

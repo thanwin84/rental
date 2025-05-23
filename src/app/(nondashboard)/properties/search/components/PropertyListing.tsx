@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import PropertyLoadingSkeleton from './PropertyLoadingSkeleton';
 import { useInView } from 'react-intersection-observer';
 import { parsePropertySearchParams } from '@/utils';
-import { getPropertiesAction } from '@/app/actions';
+import { getPropertiesAction } from '@/actions';
 
 type Props = {
   className?: string;
