@@ -4,6 +4,7 @@ export * from './customFetch';
 export * from './apiResponse';
 export * from './location';
 export * from './response';
+export * from './date';
 
 export function offsetCoordinates([lng, lat]: [number, number]) {
   const offset = (Math.random() - 0.5) * 0.0005; // small shift

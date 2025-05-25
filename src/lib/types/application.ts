@@ -1,5 +1,20 @@
-import { ApplicationStatus } from '../constants';
+import { TLease } from './lease';
+import { TProperty } from './property';
+import { TUser } from './user';
 
-export type ApplicationStatusKey = keyof typeof ApplicationStatus;
-export type ApplicationStatusValue =
-  (typeof ApplicationStatus)[ApplicationStatusKey];
+export type TApplication = {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  property: TProperty;
+  lease: TLease;
+  manager: TUser;
+};
+export type TManagerApplication = {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  property: TProperty;
+  lease: TLease;
+  user: TUser;
+};

@@ -53,4 +53,23 @@ export const propertyZodSchema = z.object({
   location: locationSchema.omit({ coordinates: true }),
 });
 
+export const rentFormSchema = z
+  .object({
+    startDate: z.string().nonempty({ message: 'Starting month is required' }),
+    endDate: z.string().nonempty({ message: 'Ending month is required' }),
+  })
+  .refine(
+    (data) => {
+      const start = new Date(data.startDate);
+      const end = new Date(data.endDate);
+      return start <= end;
+    },
+    {
+      message: 'Ending month must be after or the same as the starting month',
+      path: ['endDate'], // Apply error to endMonth field
+    }
+  );
+
+export type RentFormType = z.infer<typeof rentFormSchema>;
+
 export type PropertyType = z.infer<typeof propertyZodSchema>;

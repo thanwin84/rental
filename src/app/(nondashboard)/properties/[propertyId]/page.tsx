@@ -1,12 +1,13 @@
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Star, BedDouble, Bath, Car, Ruler } from 'lucide-react';
 import { getSingleProperty } from '@/lib/db';
 import { amenityIcons } from '@/lib/constants/amenitiesIcons';
 import { Suspense } from 'react';
 import { PropertyDetailsSkeleton } from './components';
+import RentButton from './components/RentButton';
 
 export default async function PropertyDetails({
   params,
@@ -21,18 +22,19 @@ export default async function PropertyDetails({
       <div className='max-w-5xl mx-auto p-6 space-y-6'>
         {/* Title */}
         <div className='space-y-2'>
-          <h1 className='text-3xl font-bold'>{property.name}</h1>
+          <h1 className='text-3xl font-bold'>{property.property.name}</h1>
           <div className='flex items-center gap-2 text-sm text-muted-foreground'>
             <Star className='h-4 w-4 text-yellow-500' />
             <span>
-              {property.averageRating} ({property.numberOfReviews} reviews)
+              {property.property.averageRating} (
+              {property.property.numberOfReviews} reviews)
             </span>
           </div>
         </div>
 
         {/* Images */}
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          {property.photoUrLs.map((url, i) => (
+          {property.property.photoUrLs.map((url, i) => (
             <Image
               key={i}
               src={url}
@@ -49,10 +51,14 @@ export default async function PropertyDetails({
           <CardContent className='p-6 space-y-4'>
             <div className='flex justify-between items-center'>
               <p className='text-xl font-semibold'>
-                ${property.pricePerMonth}/month
+                ${property.property.pricePerMonth}/month
               </p>
-              <Badge variant={property.isAvailable ? 'default' : 'destructive'}>
-                {property.isAvailable ? 'Available' : 'Not Available'}
+              <Badge
+                variant={
+                  property.property.isAvailable ? 'default' : 'destructive'
+                }
+              >
+                {property.property.isAvailable ? 'Available' : 'Not Available'}
               </Badge>
             </div>
 
@@ -61,19 +67,21 @@ export default async function PropertyDetails({
             <div className='grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-muted-foreground'>
               <div className='flex items-center gap-2'>
                 <BedDouble className='h-4 w-4' />
-                {property.beds} Beds
+                {property.property.beds} Beds
               </div>
               <div className='flex items-center gap-2'>
                 <Bath className='h-4 w-4' />
-                {property.baths} Baths
+                {property.property.baths} Baths
               </div>
               <div className='flex items-center gap-2'>
                 <Ruler className='h-4 w-4' />
-                {property.squareFeet ?? '--'} sqft
+                {property.property.squareFeet ?? '--'} sqft
               </div>
               <div className='flex items-center gap-2'>
                 <Car className='h-4 w-4' />
-                {property.isParkingIncluded ? 'Parking Included' : 'No Parking'}
+                {property.property.isParkingIncluded
+                  ? 'Parking Included'
+                  : 'No Parking'}
               </div>
             </div>
 
@@ -81,13 +89,13 @@ export default async function PropertyDetails({
 
             <div>
               <h2 className='text-lg font-medium mb-2'>Description</h2>
-              <p>{property.description}</p>
+              <p>{property.property.description}</p>
             </div>
 
             <div>
               <h2 className='text-lg font-medium mb-2'>Amenities</h2>
               <div className='flex flex-wrap gap-2'>
-                {property.amenities.map((item) => (
+                {property.property.amenities.map((item) => (
                   <div
                     key={item}
                     className='flex items-center gap-2 px-3 py-2 rounded-full bg-muted text-sm text-muted-foreground shadow-sm'
@@ -102,7 +110,7 @@ export default async function PropertyDetails({
             <div>
               <h2 className='text-lg font-medium mb-2'>Highlights</h2>
               <ul className='list-disc list-inside space-y-1 text-sm'>
-                {property.highLights.map((item, idx) => (
+                {property.property.highLights.map((item, idx) => (
                   <li key={idx}>{item}</li>
                 ))}
               </ul>
@@ -111,11 +119,14 @@ export default async function PropertyDetails({
             <Separator />
 
             <div className='space-y-1 text-sm'>
-              <p>Security Deposit: ${property.securityDeposit ?? 0}</p>
-              <p>Application Fee: ${property.applicationFee ?? 0}</p>
-              <p>Type: {property.propertyType}</p>
+              <p>Security Deposit: ${property.property.securityDeposit ?? 0}</p>
+              <p>Application Fee: ${property.property.applicationFee ?? 0}</p>
+              <p>Type: {property.property.propertyType}</p>
             </div>
           </CardContent>
+          <CardFooter>
+            <RentButton propertyId={propertyId} />
+          </CardFooter>
         </Card>
       </div>
     </Suspense>
