@@ -1,6 +1,6 @@
 'use server';
 
-import { getUserFromToken } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
 import { getFavouriteProperties, getProperties } from '@/lib/db';
 import { redirect } from 'next/navigation';
 
@@ -63,7 +63,7 @@ export const getMyPropertiesAction = async ({
   page?: string;
   limit?: string;
 }) => {
-  const user = await getUserFromToken();
+  const user = await getAuthenticatedUser();
   if (!user) {
     redirect('/login');
   }
@@ -81,7 +81,7 @@ export const getFavouritePropertiesAction = async ({
   page?: number;
   limit?: number;
 }) => {
-  const user = await getUserFromToken();
+  const user = await getAuthenticatedUser();
   if (!user) {
     redirect('/login');
   }

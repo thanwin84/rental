@@ -2,7 +2,7 @@
 
 import { loginFormSchema } from '@/lib/schemas';
 import { createSession } from '@/lib/session';
-import { User } from '@/lib/types';
+import { TUser } from '@/lib/types';
 import customFetch from '@/utils/customFetch';
 import { getFormValues } from '@/utils/getFormValues';
 import { AxiosError } from 'axios';
@@ -21,7 +21,7 @@ export async function loginAction(_prevState: unknown, formData: FormData) {
     return formState;
   }
   try {
-    const res: User = await customFetch.post('/api/users/login', data);
+    const res: TUser = await customFetch.post('/api/users/login', data);
     await createSession(res._id.toString(), res.role);
     formState.success = true;
     return formState;

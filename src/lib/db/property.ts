@@ -1,4 +1,4 @@
-import { FavouriteProperty, Property } from '@/models';
+import { FavouriteProperty, Lease, Property } from '@/models';
 import { PropertyType } from '../schemas/property';
 import { apiResponse } from '@/utils/apiResponse';
 import { connectDb } from '@/db_connect/dbConnect';
@@ -309,8 +309,14 @@ export const getPropertiesWithinMapBounds = async (
 export const getSingleProperty = async (
   propertyId: string
 ): Promise<SingleProperTy> => {
-  const property = await Property.findById(propertyId).populate('locationId');
+  const property: any = await Property.findById(propertyId).populate(
+    'locationId'
+  );
+  if (!property) {
+    throw new Error('Propert not found');
+  }
   const propertyObj = property.toObject();
+
   const location = {
     coordinates: propertyObj.locationId.location.coordinates,
     city: propertyObj.locationId.city,
@@ -323,6 +329,7 @@ export const getSingleProperty = async (
     property: propertyObj,
     location: location,
   };
+
   return JSON.parse(JSON.stringify(newProperty));
 };
 
@@ -416,4 +423,20 @@ export const getFavouriteProperties = async ({
     properties: JSON.parse(JSON.stringify(properties)),
     pagination,
   };
+};
+
+export const getListOfRentedPropertyId = async ({
+  userId,
+}: {
+  userId: string;
+}) => {
+  try {
+    const leases = await Lease.find({ isActive: true, tenantId: userId })
+      .select('propertyId')
+      .lean();
+
+    return leases.map((lease) => lease.propertyId.toString());
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };

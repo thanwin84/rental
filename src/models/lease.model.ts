@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import { TLease } from '@/lib/types';
+import mongoose, { Model } from 'mongoose';
 
-const leaseSchema = new mongoose.Schema(
+const leaseSchema = new mongoose.Schema<TLease>(
   {
     tenantId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     propertyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Property' },
@@ -13,5 +14,5 @@ const leaseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export const Lease =
-  mongoose.models.Lease || mongoose.model('Lease', leaseSchema);
+export const Lease: Model<TLease> =
+  mongoose.models.Lease || mongoose.model<TLease>('Lease', leaseSchema);

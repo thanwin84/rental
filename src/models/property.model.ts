@@ -1,6 +1,7 @@
-import mongoose, { Schema, model, models } from 'mongoose';
+import { IProperty } from '@/lib/types';
+import mongoose, { Model, Schema, model, models } from 'mongoose';
 
-const propertySchema = new Schema(
+const propertySchema = new Schema<IProperty>(
   {
     name: {
       type: String,
@@ -61,5 +62,6 @@ const propertySchema = new Schema(
   { timestamps: true }
 );
 
-const Property = models.Property || model('Property', propertySchema);
+const Property: Model<IProperty> =
+  models.Property || model<IProperty>('Property', propertySchema);
 export default Property;
