@@ -3,6 +3,7 @@ import { config } from '@/config';
 import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 import { token } from './constants';
+import { cache } from 'react';
 
 type Payload = {
   userId: string;
@@ -37,7 +38,7 @@ export const verifyAccessToken = async (token: string | undefined = '') => {
     });
 
     return payload as Payload;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -74,12 +75,8 @@ export async function deleteSession() {
   cookieStore.delete(token.ACCESS_TOKEN);
   cookieStore.delete(token.REFRESH_TOKEN);
 }
-export async function verifySession(): Promise<{
-  userId: string;
-  isAuthenticated: boolean;
-  role: string;
-  reason?: 'expired' | 'invalid' | 'none';
-}> {
+
+export const verifySession = cache(async () => {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get(token.ACCESS_TOKEN)?.value;
 
@@ -104,7 +101,7 @@ export async function verifySession(): Promise<{
     userId: '',
     role: '',
   };
-}
+});
 
 export async function decodedAccessToken() {
   const cookie = await cookies();

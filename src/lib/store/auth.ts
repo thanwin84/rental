@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { User } from '../types';
+import { TUser } from '../types';
 import customFetch from '@/utils/customFetch';
 
 type State = {
-  user: User | null;
+  user: TUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -17,20 +17,20 @@ const initialState: State = {
   error: null,
 };
 type StoreType = {
-  login: (user: User) => void;
+  login: (user: TUser) => void;
   logout: () => void;
-  loadUser: () => Promise<User | null>;
+  loadUser: () => Promise<TUser | null>;
 } & State;
 
 export const useAuthStore = create<StoreType>()(
   persist(
     (set) => ({
       ...initialState,
-      login: (user: User) => set({ user: user, isAuthenticated: true }),
+      login: (user: TUser) => set({ user: user, isAuthenticated: true }),
       logout: () => set({ user: null, isAuthenticated: false }),
       loadUser: async () => {
         try {
-          const user: User = await customFetch.get('/api/users/me');
+          const user: TUser = await customFetch.get('/api/users/me');
           set({
             user,
             isAuthenticated: true,

@@ -3,7 +3,7 @@ import { token } from './constants';
 import { verifyAccessToken } from './session';
 import { NextRequest } from 'next/server';
 
-export const getUserFromToken = async (request?: NextRequest) => {
+export const getAuthenticatedUser = async (request?: NextRequest) => {
   const cookieStore = await cookies();
   let accessToken =
     cookieStore.get(token.ACCESS_TOKEN)?.value ||
@@ -18,5 +18,6 @@ export const getUserFromToken = async (request?: NextRequest) => {
     }
   }
   const decodedAccessToken = await verifyAccessToken(accessToken);
+
   return decodedAccessToken;
 };
