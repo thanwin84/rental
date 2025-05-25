@@ -12,7 +12,11 @@ export async function POST(request: NextRequest) {
   const user = await User.findOne({ email: reqBody.email });
   if (user) {
     return NextResponse.json(
-      apiResponse({ message: 'User is already registred', success: false }),
+      apiResponse({
+        message: 'User is already registred',
+        success: false,
+        status: statusCodes.BAD_REQUEST,
+      }),
       { status: statusCodes.BAD_REQUEST }
     );
   }
@@ -20,7 +24,11 @@ export async function POST(request: NextRequest) {
   const hashedPassword = await bcrypt.hash(reqBody.password, salt);
   await User.create({ ...reqBody, password: hashedPassword });
   return NextResponse.json(
-    apiResponse({ message: 'User is registered successfully', success: true }),
+    apiResponse({
+      message: 'User is registered successfully',
+      success: true,
+      status: statusCodes.CREATED,
+    }),
     { status: statusCodes.CREATED }
   );
 }

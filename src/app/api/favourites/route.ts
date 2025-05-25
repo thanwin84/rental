@@ -1,5 +1,5 @@
 import { connectDb } from '@/db_connect/dbConnect';
-import { getUserFromToken } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
 import { getFavouriteProperties } from '@/lib/db';
 import { FavouriteProperty } from '@/models';
 
@@ -8,7 +8,7 @@ connectDb();
 export async function POST(request: NextRequest) {
   try {
     const { propertyId } = await request.json();
-    const user = await getUserFromToken(request);
+    const user = await getAuthenticatedUser(request);
 
     if (!user) {
       return NextResponse.json(
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getUserFromToken(request);
+    const user = await getAuthenticatedUser(request);
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '6');

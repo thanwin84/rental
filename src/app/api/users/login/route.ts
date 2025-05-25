@@ -10,7 +10,6 @@ export async function POST(request: NextRequest) {
   const response = NextResponse.json(loginResponse, {
     status: loginResponse.status,
   });
-  console.log(loginResponse);
 
   const accessToken = await generateAccessToken({
     userId: loginResponse.data._id.toString(),

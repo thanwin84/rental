@@ -1,4 +1,4 @@
-import { getUserFromToken } from '@/lib/auth';
+import { getAuthenticatedUser } from '@/lib/auth';
 import { createLocation } from '@/lib/db/location';
 import { createProperty, getProperties } from '@/lib/db';
 import { uploadToCloudinary } from '@/lib/uploadOnCloudinary';
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   }
   const { lng, lat } = await getCoordinatesFromLocation(location);
   try {
-    const user = await getUserFromToken(request);
+    const user = await getAuthenticatedUser(request);
     if (!user || !user.userId) {
       return NextResponse.json(
         apiResponse({
