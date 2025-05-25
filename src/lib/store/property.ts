@@ -15,7 +15,10 @@ export type Filter = {
 };
 type Store = {
   favouriteIds: string[];
+  rentedPropertyIds: string[];
   setFavouriteIds: (ids: string[]) => void;
+  setRentedPropertyIds: (ids: string[]) => void;
+  addRentedPropertyId: (id: string) => void;
   toggleFavourite: (id: string) => void;
   filterState: Filter;
   setFilter: (key: keyof Filter, value: Filter[keyof Filter]) => void;
@@ -40,7 +43,15 @@ export const usePropertyStore = create<Store>()(
   persist(
     (set, get) => ({
       favouriteIds: [],
+      rentedPropertyIds: [],
       filterState: defaultFilterState,
+      setRentedPropertyIds: (ids: string[]) => set({ rentedPropertyIds: ids }),
+      addRentedPropertyId: (id: string) =>
+        set((state) => ({
+          rentedPropertyIds: state.rentedPropertyIds.includes(id)
+            ? state.rentedPropertyIds
+            : [...state.rentedPropertyIds, id],
+        })),
       setFavouriteIds: (ids: string[]) => set({ favouriteIds: ids }),
       setFilter: (key, value) =>
         set((state) => ({
@@ -58,7 +69,11 @@ export const usePropertyStore = create<Store>()(
         });
       },
       resetState: () =>
-        set({ filterState: defaultFilterState, favouriteIds: [] }),
+        set({
+          filterState: defaultFilterState,
+          favouriteIds: [],
+          rentedPropertyIds: [],
+        }),
     }),
     {
       name: 'property-storage',
