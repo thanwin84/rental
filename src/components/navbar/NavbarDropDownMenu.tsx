@@ -59,12 +59,16 @@ export default function NavbarDropDownMenu({ className }: Props) {
 
         <div className='flex flex-col text-left'>
           <span className='text-slate-100 font-medium text-sm'>
-            {'Than Win Hline'}
+            {authStore.user?.firstName + ' ' + authStore.user?.lastName}
           </span>
           <span className='text-slate-400 text-xs'>{'Renters'}</span>
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='w-48 mt-2 rounded-md bg-stone-800 shadow-lg px-2 py-4'>
+      <DropdownMenuContent
+        sideOffset={8}
+        align='end'
+        className='w-48 mt-2 rounded-md bg-stone-800 shadow-lg px-2 py-4'
+      >
         {links.map((link) => {
           if (link.pathName === 'Logout') {
             return (

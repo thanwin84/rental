@@ -14,7 +14,7 @@ export default function Navbar({ onMenuClick }: { onMenuClick?: () => void }) {
   const isDashboard = location.includes('/dashboard');
 
   return (
-    <nav className=' w-full bg-stone-900 h-[58px] flex justify-between items-center px-8'>
+    <nav className='bg-stone-900 h-[58px] flex justify-between items-center px-8'>
       <Link className='hidden lg:block' href='/'>
         <Logo />
       </Link>
