@@ -4,8 +4,6 @@
 import { loginUser } from '@/lib/db';
 import { loginFormSchema } from '@/lib/schemas';
 import { createSession } from '@/lib/session';
-import { TUser } from '@/lib/types';
-import customFetch from '@/utils/customFetch';
 import { getFormValues } from '@/utils/getFormValues';
 import { AxiosError } from 'axios';
 
