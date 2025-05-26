@@ -1,9 +1,77 @@
 import { connectDb } from '@/db_connect/dbConnect';
 import { Application, Lease, Property } from '@/models';
-import mongoose from 'mongoose';
-import { TApplication, TManagerApplication } from '../types/application';
+import mongoose, { PipelineStage } from 'mongoose';
+import { TApplication } from '../types/application';
 
 connectDb();
+const pipeline: PipelineStage[] = [
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'userId',
+      foreignField: '_id',
+      as: 'applicant',
+    },
+  },
+  {
+    $lookup: {
+      from: 'properties',
+      localField: 'propertyId',
+      foreignField: '_id',
+      as: 'property',
+    },
+  },
+  {
+    $lookup: {
+      from: 'leases',
+      localField: 'leaseId',
+      foreignField: '_id',
+      as: 'lease',
+    },
+  },
+  {
+    $addFields: {
+      property: { $first: '$property' },
+      applicant: { $first: '$applicant' },
+      lease: { $first: '$lease' },
+    },
+  },
+  {
+    $lookup: {
+      from: 'locations',
+      localField: 'property.locationId',
+      foreignField: '_id',
+      as: 'property.location',
+    },
+  },
+  {
+    $addFields: {
+      'property.location': { $first: '$property.location' },
+    },
+  },
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'property.ownerId',
+      foreignField: '_id',
+      as: 'propertyOwner',
+    },
+  },
+  {
+    $addFields: {
+      propertyOwner: { $first: '$propertyOwner' },
+    },
+  },
+  {
+    $project: {
+      userId: 0,
+      propertyId: 0,
+      __v: 0,
+      leaseId: 0,
+    },
+  },
+];
+
 export const createApplication = async ({
   userId,
   propertyId,
@@ -37,260 +105,56 @@ export const createApplication = async ({
   return newApplication;
 };
 
-export const getMyApplications = async ({
+export const listApplications = async ({
   userId,
   limit = 10,
   page = 1,
+  applicationId,
 }: {
-  userId: string;
+  userId?: string;
   limit?: number;
   page?: number;
+  applicationId?: string;
 }) => {
   const skips = (page - 1) * limit;
-  const applications: TApplication[] = await Application.aggregate([
-    {
+
+  const matchStages: PipelineStage[] = [];
+  if (userId) {
+    matchStages.push({
       $match: {
         userId: new mongoose.Types.ObjectId(userId),
       },
-    },
-    {
-      $lookup: {
-        from: 'properties',
-        localField: 'propertyId',
-        foreignField: '_id',
-        as: 'property',
-      },
-    },
-    {
-      $lookup: {
-        from: 'leases',
-        localField: 'leaseId',
-        foreignField: '_id',
-        as: 'lease',
-      },
-    },
-    {
-      $addFields: {
-        user: { $first: '$user' },
-        property: { $first: '$property' },
-        lease: { $first: '$lease' },
-        manager: '$property.ownerId',
-      },
-    },
-    {
-      $addFields: {
-        manager: { $first: '$manager' },
-      },
-    },
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'manager',
-        foreignField: '_id',
-        as: 'manager',
-      },
-    },
-    {
-      $addFields: {
-        manager: { $first: '$manager' },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        updatedAt: 1,
-        createdAt: 1,
-        property: 1,
-        manager: 1,
-        lease: 1,
-      },
-    },
-    {
-      $skip: skips,
-    },
-    { $limit: limit },
-  ]);
-  return applications;
-};
-
-export const getMyApplication = async (
-  applicationId: string
-): Promise<TApplication> => {
-  const applications = await Application.aggregate([
-    {
+    });
+  }
+  if (applicationId) {
+    matchStages.push({
       $match: {
         _id: new mongoose.Types.ObjectId(applicationId),
       },
-    },
-    {
-      $lookup: {
-        from: 'properties',
-        localField: 'propertyId',
-        foreignField: '_id',
-        as: 'property',
-      },
-    },
-    {
-      $lookup: {
-        from: 'leases',
-        localField: 'leaseId',
-        foreignField: '_id',
-        as: 'lease',
-      },
-    },
-    {
-      $addFields: {
-        user: { $first: '$user' },
-        property: { $first: '$property' },
-        lease: { $first: '$lease' },
-        manager: '$property.ownerId',
-      },
-    },
-    {
-      $addFields: {
-        manager: { $first: '$manager' },
-      },
-    },
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'manager',
-        foreignField: '_id',
-        as: 'manager',
-      },
-    },
-    {
-      $addFields: {
-        manager: { $first: '$manager' },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        updatedAt: 1,
-        createdAt: 1,
-        property: 1,
-        manager: 1,
-        lease: 1,
-      },
-    },
-  ]);
-  if (applications.length === 0) {
-    throw new Error(`Application with ${applicationId} not found`);
+    });
   }
-  return applications[0];
-};
 
-export const getAllApplicationsForManger = async ({
-  limit = 10,
-  page = 1,
-}: {
-  limit?: number;
-  page?: number;
-}) => {
-  const skips = (page - 1) * limit;
-  const applications: TManagerApplication[] = await Application.aggregate([
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'userId',
-        foreignField: '_id',
-        as: 'user',
-      },
-    },
-    {
-      $lookup: {
-        from: 'properties',
-        localField: 'propertyId',
-        foreignField: '_id',
-        as: 'property',
-      },
-    },
-    {
-      $lookup: {
-        from: 'leases',
-        localField: 'leaseId',
-        foreignField: '_id',
-        as: 'lease',
-      },
-    },
-    {
-      $addFields: {
-        user: { $first: '$user' },
-        property: { $first: '$property' },
-        lease: { $first: '$lease' },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        updatedAt: 1,
-        createdAt: 1,
-        property: 1,
-        user: 1,
-        lease: 1,
-      },
-    },
-    {
-      $skip: skips,
-    },
+  const aggregationPipeline: PipelineStage[] = [
+    ...matchStages,
+    ...pipeline,
+    { $skip: skips },
     { $limit: limit },
-  ]);
-  return applications;
-};
-export const getSingleApplicationForManager = async (applicationId: string) => {
-  const applications: TManagerApplication[] = await Application.aggregate([
-    {
-      $match: {
-        _id: new mongoose.Types.ObjectId(applicationId),
-      },
-    },
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'userId',
-        foreignField: '_id',
-        as: 'user',
-      },
-    },
-    {
-      $lookup: {
-        from: 'properties',
-        localField: 'propertyId',
-        foreignField: '_id',
-        as: 'property',
-      },
-    },
-    {
-      $lookup: {
-        from: 'leases',
-        localField: 'leaseId',
-        foreignField: '_id',
-        as: 'lease',
-      },
-    },
-    {
-      $addFields: {
-        user: { $first: '$user' },
-        property: { $first: '$property' },
-        lease: { $first: '$lease' },
-      },
-    },
-    {
-      $project: {
-        _id: 1,
-        updatedAt: 1,
-        createdAt: 1,
-        property: 1,
-        user: 1,
-        lease: 1,
-      },
-    },
-  ]);
-  if (applications.length === 0) {
-    throw new Error(`Application with id ${applicationId} not found`);
-  }
-  return applications[0];
+  ];
+
+  const applications: TApplication[] = await Application.aggregate(
+    aggregationPipeline
+  );
+
+  const countPipeline: PipelineStage[] = [
+    ...matchStages,
+    ...pipeline,
+    { $count: 'total' },
+  ];
+  const countResult = await Application.aggregate(countPipeline);
+  const total = countResult.length > 0 ? Number(countResult[0].total) : 0;
+  const totalPages = Math.ceil(total / limit);
+
+  return { applications, total, page, limit, totalPages };
 };
 
 export const updateApplicationStatus = async (

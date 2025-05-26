@@ -2,7 +2,6 @@ import PropertyListingContainer from './components/PropertyListingContainer';
 import { Suspense } from 'react';
 
 type Props = {
-  className?: string;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 

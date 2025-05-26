@@ -2,11 +2,8 @@
 
 import {
   createApplication,
-  getAllApplicationsForManger,
   getListOfRentedPropertyId,
-  getMyApplication,
-  getMyApplications,
-  getSingleApplicationForManager,
+  listApplications,
   updateApplicationStatus,
 } from '@/lib/db';
 import { verifySession } from '@/lib/session';
@@ -37,17 +34,16 @@ export const createApplicationAction = async ({
   }
 };
 
-export const getMyApplicationsAction = async ({
+export const listApplicationsAction = async ({
   page,
   limit,
 }: {
   page?: number;
   limit?: number;
 }) => {
-  const session = await verifySession();
+  await verifySession();
   try {
-    const applications = await getMyApplications({
-      userId: session.userId,
+    const applications = await listApplications({
       page,
       limit,
     });
@@ -58,29 +54,20 @@ export const getMyApplicationsAction = async ({
     return failure(errorMessage, '500');
   }
 };
-
-export const getMyApplicationAction = async (applicationId: string) => {
-  await verifySession();
-  try {
-    const application = await getMyApplication(applicationId);
-    return success(application);
-  } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : 'An unknown error occurred';
-    return failure(errorMessage, '500');
-  }
-};
-
-export const getApplicationsAction = async ({
-  limit,
+export const listMyApplicationsAction = async ({
   page,
+  limit,
 }: {
-  limit: number;
-  page: number;
+  page?: number;
+  limit?: number;
 }) => {
-  await verifySession();
+  const session = await verifySession();
   try {
-    const applications = await getAllApplicationsForManger({ limit, page });
+    const applications = await listApplications({
+      page,
+      limit,
+      userId: session.userId,
+    });
     return success(applications);
   } catch (error) {
     const errorMessage =
@@ -89,11 +76,11 @@ export const getApplicationsAction = async ({
   }
 };
 
-export const getApplicationAction = async (applicationId: string) => {
+export const getApplicationByIdAction = async (applicationId: string) => {
   await verifySession();
   try {
-    const application = await getSingleApplicationForManager(applicationId);
-    return success(application);
+    const applications = await listApplications({ applicationId });
+    return success(applications.applications[0]);
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : 'An unknown error occurred';
@@ -101,7 +88,7 @@ export const getApplicationAction = async (applicationId: string) => {
   }
 };
 
-export const updateApplicationStatusAction = async (
+export const updateApplicationByIdAction = async (
   applicationId: string,
   status: string
 ) => {

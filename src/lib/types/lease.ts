@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { LEASE_STATUSES } from '../constants';
 
 export type TLease = {
   _id: Types.ObjectId;
@@ -7,8 +8,10 @@ export type TLease = {
   startDate: Date;
   endDate: Date;
   monthlyRent: number;
-  isActive: boolean;
+  status: string;
   securityDeposit: number;
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type LeaseStatus = (typeof LEASE_STATUSES)[keyof typeof LEASE_STATUSES];

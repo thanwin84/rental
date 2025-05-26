@@ -1,8 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getAuthenticatedUser } from '@/lib/auth';
-import {
-  getSingleApplicationForManager,
-  updateApplicationStatus,
-} from '@/lib/db';
+import { listApplications, updateApplicationStatus } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
@@ -12,7 +10,7 @@ export async function GET(
   const { applicationId } = await params;
   await getAuthenticatedUser();
   try {
-    const application = await getSingleApplicationForManager(applicationId);
+    const application = await listApplications({ applicationId });
     return NextResponse.json({
       status: 200,
       data: application,

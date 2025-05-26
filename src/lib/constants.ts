@@ -56,5 +56,11 @@ const paymentStatus = {
   SECURITY_DEPOSIT: 'securityDeposit',
   APPLICATION_FEE: 'applicationFee',
 };
-
+export const LEASE_STATUSES = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+  ACTIVE: 'active',
+  COMPLETED: 'completed',
+} as const;
 export { highlight, amenity, propertyType, applicationStatus, paymentStatus };

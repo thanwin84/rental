@@ -48,7 +48,7 @@ export const verifyRefreshToken = async (token: string | undefined = '') => {
       algorithms: ['HS256'],
     });
     return payload as Payload;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -59,13 +59,13 @@ export async function createSession(userId: string, role: string) {
   const refreshToken = await generateRefreshToken({ userId, role });
   cookieStore.set(token.ACCESS_TOKEN, accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: config.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
   });
   cookieStore.set(token.REFRESH_TOKEN, refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: config.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
   });

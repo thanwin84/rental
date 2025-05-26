@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { loginUser } from '@/lib/db/user';
 import { token } from '@/lib/constants';
 import { generateAccessToken } from '@/lib/session';
+import { config } from '@/config';
 
 export async function POST(request: NextRequest) {
   const reqBody = await request.json();
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
   // this will set cookie in the client side
   response.cookies.set(token.ACCESS_TOKEN, accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: config.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
   });

@@ -8,7 +8,7 @@ export default function UnauthorizedPage() {
         <h1 className='text-5xl font-bold text-destructive mb-4'>401</h1>
         <h2 className='text-2xl font-semibold mb-2'>You are not authorized</h2>
         <p className='text-muted-foreground mb-6'>
-          Sorry, you don't have permission to access this page.
+          {"Sorry, you don't have permission to access this page."}
         </p>
 
         <Link href='/login'>

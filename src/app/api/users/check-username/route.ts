@@ -12,12 +12,20 @@ export async function POST(request: NextRequest) {
   const user = await User.findOne({ username });
   if (user) {
     return NextResponse.json(
-      apiResponse({ success: true, message: 'This username already exists' }),
+      apiResponse({
+        success: true,
+        message: 'This username already exists',
+        status: statusCodes.OK,
+      }),
       { status: statusCodes.OK }
     );
   } else {
     return NextResponse.json(
-      apiResponse({ success: false, message: 'This username is available' }),
+      apiResponse({
+        success: false,
+        message: 'This username is available',
+        status: statusCodes.OK,
+      }),
       { status: statusCodes.OK }
     );
   }

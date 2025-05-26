@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { connectDb } from '@/db_connect/dbConnect';
 import { getAuthenticatedUser } from '@/lib/auth';
 import { getFavouriteProperties } from '@/lib/db';
@@ -75,7 +76,7 @@ export async function GET(request: NextRequest) {
       status: 200,
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('[GET_FAVOURITES_ERROR]', error);
     return NextResponse.json(
       { message: 'Something went wrong', error: error.message },

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FavouriteProperty, Lease, Property } from '@/models';
 import { PropertyType } from '../schemas/property';
 import { apiResponse } from '@/utils/apiResponse';
@@ -334,8 +335,11 @@ export const getSingleProperty = async (
 };
 
 export const deletePropertyById = async (propertyId: string) => {
-  const reuslt = await Property.findByIdAndDelete(propertyId);
-  await Location.deleteOne({ _id: reuslt.locationId });
+  const result = await Property.findByIdAndDelete(propertyId);
+  if (!result) {
+    throw new Error(`Property with id ${propertyId}  not found`);
+  }
+  await Location.deleteOne({ _id: result.locationId });
 };
 
 export const getFavouriteProperties = async ({
@@ -431,12 +435,12 @@ export const getListOfRentedPropertyId = async ({
   userId: string;
 }) => {
   try {
-    const leases = await Lease.find({ isActive: true, tenantId: userId })
+    const leases = await Lease.find({ tenantId: userId })
       .select('propertyId')
       .lean();
 
     return leases.map((lease) => lease.propertyId.toString());
-  } catch (error) {
+  } catch (error: any) {
     throw new Error(error.message);
   }
 };

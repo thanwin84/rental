@@ -15,6 +15,7 @@ export function InitFavouriteStore() {
       setRentedPropertyIds(data?.data as string[]);
     };
     fun();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return null;

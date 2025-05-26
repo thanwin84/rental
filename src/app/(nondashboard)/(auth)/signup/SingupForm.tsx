@@ -156,7 +156,7 @@ export default function SignupForm() {
         </RadioGroup>
       </div>
       {pending ? (
-        <LoadingButton text='Creating..' />
+        <LoadingButton className='w-full' text='Creating..' />
       ) : (
         <Button
           className='w-full bg-zinc-800 hover:bg-zinc-900 cursor-pointer'

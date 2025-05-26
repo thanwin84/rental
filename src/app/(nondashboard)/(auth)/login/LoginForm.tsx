@@ -29,7 +29,8 @@ export default function LoginForm() {
         toast.error(state.message);
       }
     }
-  }, [router, state]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   const handleSubmit = async (formData: FormData) => {
     setFieldsTouched({
@@ -82,7 +83,7 @@ export default function LoginForm() {
       />
 
       {pending ? (
-        <LoadingButton text='In progess..' />
+        <LoadingButton className='w-full' text='' />
       ) : (
         <Button
           className='w-full bg-zinc-800 hover:bg-zinc-900 cursor-pointer'

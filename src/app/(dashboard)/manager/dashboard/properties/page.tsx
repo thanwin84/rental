@@ -5,7 +5,6 @@ import {
 } from './components';
 
 type Props = {
-  className?: string;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import mongoose from 'mongoose';
 import User from '@/models/user.model'; // Make sure the path is correct
 import { apiResponse } from '@/utils/apiResponse';

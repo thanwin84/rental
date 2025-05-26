@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getAuthenticatedUser } from '@/lib/auth';
-import { createApplication, getAllApplicationsForManger } from '@/lib/db';
+import { createApplication, listApplications } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
-  const { propertyId } = await request.json();
+  const { propertyId, startDate, endDate } = await request.json();
   const user = await getAuthenticatedUser(request);
 
   if (!user) {
@@ -16,6 +17,8 @@ export async function POST(request: NextRequest) {
     const application = await createApplication({
       userId: user.userId,
       propertyId,
+      startDate,
+      endDate,
     });
     return NextResponse.json({
       status: 201,
@@ -36,7 +39,7 @@ export async function GET(request: NextRequest) {
   const limit = parseInt(searchParams.get('limit') || '10', 10);
 
   try {
-    const applications = await getAllApplicationsForManger({ limit, page });
+    const applications = await listApplications({ limit, page });
     return NextResponse.json({
       status: 200,
       data: applications,

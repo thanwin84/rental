@@ -1,10 +1,6 @@
 import CreatePropertyForm from './components/CreatePropertyForm';
 
-type Props = {
-  className?: string;
-};
-
-export default function Properties({}: Props) {
+export default function Properties() {
   return (
     <section className='bg-stone-100 h-screen p-6 '>
       <div className='ml-3'>

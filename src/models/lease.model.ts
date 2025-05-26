@@ -1,3 +1,4 @@
+import { LEASE_STATUSES } from '@/lib/constants';
 import { TLease } from '@/lib/types';
 import mongoose, { Model } from 'mongoose';
 
@@ -8,8 +9,12 @@ const leaseSchema = new mongoose.Schema<TLease>(
     startDate: Date,
     endDate: Date,
     monthlyRent: Number,
-    isActive: { type: Boolean, default: true },
     securityDeposit: Number,
+    status: {
+      type: String,
+      enum: Object.values(LEASE_STATUSES),
+      default: LEASE_STATUSES.PENDING,
+    },
   },
   { timestamps: true }
 );
