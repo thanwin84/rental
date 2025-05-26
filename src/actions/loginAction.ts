@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
+import { loginUser } from '@/lib/db';
 import { loginFormSchema } from '@/lib/schemas';
 import { createSession } from '@/lib/session';
 import { TUser } from '@/lib/types';
@@ -21,8 +23,11 @@ export async function loginAction(_prevState: unknown, formData: FormData) {
     return formState;
   }
   try {
-    const res: TUser = await customFetch.post('/api/users/login', data);
-    await createSession(res._id.toString(), res.role);
+    const res: any = await loginUser(
+      data.email as string,
+      data.password as string
+    );
+    await createSession(res.data._id.toString(), res.role);
     formState.success = true;
     return formState;
   } catch (error: unknown) {

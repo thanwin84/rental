@@ -69,6 +69,7 @@ export async function createSession(userId: string, role: string) {
     sameSite: 'lax',
     path: '/',
   });
+  console.log(cookieStore);
 }
 export async function deleteSession() {
   const cookieStore = await cookies();
