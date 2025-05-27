@@ -43,7 +43,7 @@ export const propertyZodSchema = z.object({
     image: z
       .instanceof(File)
       .optional()
-      .refine((file) => !file || file.size <= 500000, {
+      .refine((file) => !file || file.size <= 800000, {
         message: 'Image size must be under 0.5MB',
       })
       .refine((file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type), {
