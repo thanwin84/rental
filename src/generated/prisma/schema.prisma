@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql" // Works for both MySQL and MariaDB
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  tanent
+  manager
+  admin
+}
+
+model User {
+  id                        String              @id @default(uuid())
+  firstName                 String
+  lastName                  String
+  username                  String              @unique
+  email                     String              @unique
+  createdAt                 DateTime            @default(now())
+  updatedAt                 DateTime            @default(now()) @updatedAt
+  password                  String
+  isVerified                Boolean             @default(false)
+  role                      UserRole            @default(tanent)
+  phoneNumber               String?
+  forgotPasswordToken       String?
+  forgotPasswordTokenExpiry DateTime?
+  verifyToken               String?
+  verifyTokenExpiry         DateTime?
+  properties                Property[]
+  FavouriteProperty         FavouriteProperty[]
+}
+
+model Property {
+  id                String              @id @default(uuid())
+  name              String
+  description       String
+  pricePerMonth     Float
+  securityDeposit   Float?
+  applicationFee    Float?
+  isParkingIncluded Boolean?
+  beds              Int
+  baths             Int
+  squareFeet        Float?
+  propertyType      String
+  averageRating     Float               @default(0)
+  numberOfReviews   Int                 @default(0)
+  locationId        String
+  owner             User                @relation(fields: [ownerId], references: [id])
+  ownerId           String
+  isAvailable       Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  photoUrls         PhotoUrl[]
+  amenities         Amenity[]
+  highLights        HighLight[]
+  FavouriteProperty FavouriteProperty[]
+}
+
+model PhotoUrl {
+  id         String   @id @default(uuid())
+  url        String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+}
+
+model Amenity {
+  id         String   @id @default(uuid())
+  name       String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+}
+
+model HighLight {
+  id         String   @id @default(uuid())
+  name       String
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+}
+
+model FavouriteProperty {
+  id         String   @id @default(uuid())
+  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+
+  @@unique([userId, propertyId])
+}
