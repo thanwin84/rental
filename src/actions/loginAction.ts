@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
 import { loginUser } from '@/lib/db';
@@ -21,18 +20,15 @@ export async function loginAction(_prevState: unknown, formData: FormData) {
     return formState;
   }
   try {
-    const res: any = await loginUser(
-      data.email as string,
-      data.password as string
-    );
-    await createSession(res.data._id.toString(), res.role);
+    const res = await loginUser(data.email as string, data.password as string);
+    await createSession(res.id.toString(), res.role);
     formState.success = true;
     return formState;
   } catch (error: unknown) {
     if (error instanceof AxiosError && error.response?.data?.message) {
       formState.message = error.response.data.message;
-    } else {
-      formState.message = 'Something went wrong. Please try again.';
+    } else if (error instanceof Error) {
+      formState.message = error?.message;
     }
 
     return formState;

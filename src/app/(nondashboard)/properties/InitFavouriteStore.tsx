@@ -8,7 +8,9 @@ export function InitFavouriteStore() {
   const { setFavouriteIds, setRentedPropertyIds } = usePropertyStore();
   useEffect(() => {
     getFavouritesIdList()
-      .then((ids) => setFavouriteIds(ids.favouritesIdList))
+      .then((ids) => {
+        setFavouriteIds(ids.favouritesIdList);
+      })
       .catch((err) => console.error('Failed to load favourite IDs:', err));
     const fun = async () => {
       const data = await getListOfRentedPropertyIdAction();

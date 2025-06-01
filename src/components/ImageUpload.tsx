@@ -6,14 +6,14 @@ import { FormControl, FormField, FormItem, FormLabel } from './ui/form';
 import { Camera } from 'lucide-react';
 import { Input } from './ui/input';
 import Image from 'next/image';
-import { PropertyType } from '@/lib/schemas';
+import { PropertyFormType } from '@/lib/schemas';
 
 export default function ImageUpload({ photoUrl }: { photoUrl: string }) {
   const [filePreview, setFilePreview] = useState<string | null>(photoUrl);
   const {
     control,
     formState: { errors },
-  } = useFormContext<PropertyType>();
+  } = useFormContext<PropertyFormType>();
 
   return (
     <div>

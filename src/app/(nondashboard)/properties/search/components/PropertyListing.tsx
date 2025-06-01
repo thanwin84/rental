@@ -1,15 +1,15 @@
 'use client';
 import PropertyCard from './PropertyCard';
-import { PropertyListApiResponse } from '@/lib/types';
 import { useCallback, useEffect, useState } from 'react';
 import PropertyLoadingSkeleton from './PropertyLoadingSkeleton';
 import { useInView } from 'react-intersection-observer';
 import { parsePropertySearchParams } from '@/utils';
 import { getPropertiesAction } from '@/actions';
+import { GetPropertiesType } from '@/lib/types';
 
 type Props = {
   className?: string;
-  propertyListData: PropertyListApiResponse;
+  propertyListData: GetPropertiesType;
   searchParams: Record<string, string | string[] | undefined>;
 };
 
@@ -35,10 +35,11 @@ export default function PropertyListing({
     try {
       const params = parsePropertySearchParams(searchParams);
       const nextPage = page + 1;
-      const data = await getPropertiesAction({
+      const data: GetPropertiesType = await getPropertiesAction({
         ...params,
         page: nextPage.toString(),
       });
+
       setProperties((prev) => [...prev, ...data.properties]);
       setHasMore(data.pagination.currentPage < data.pagination.totalPages);
       setPage(nextPage);
@@ -66,16 +67,16 @@ export default function PropertyListing({
       {properties?.map((property) => (
         <PropertyCard
           className='mb-2'
-          key={property.property._id}
-          title={property.property.name}
+          key={property.id}
+          title={property.name}
           location='Dhaka, Bangladesh'
-          rating={property.property.averageRating}
-          reviewsCount={property.property.numberOfReviews}
-          pricePerMonth={property.property.pricePerMonth}
-          imgSrc={property.property.photoUrLs[0]}
-          beds={property.property.beds}
-          baths={property.property.baths}
-          id={property.property._id}
+          rating={property.averageRating}
+          reviewsCount={property.numberOfReviews}
+          pricePerMonth={property.pricePerMonth}
+          imgSrc={property.photoUrls[0]}
+          beds={property.beds}
+          baths={property.baths}
+          id={property.id}
         />
       ))}
       {hasMore && (

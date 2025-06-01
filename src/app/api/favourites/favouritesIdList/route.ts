@@ -1,5 +1,5 @@
 import { getAuthenticatedUser } from '@/lib/auth';
-import { FavouriteProperty } from '@/models';
+import { getFavouritePropertyList } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -10,10 +10,7 @@ export async function GET(request: NextRequest) {
       { status: 401 }
     );
   }
-  const favourites = await FavouriteProperty.find({
-    userId: user.userId,
-  }).select('-_id propertyId');
-  const ids = favourites.map((item) => item.propertyId);
+  const ids = await getFavouritePropertyList(user.userId);
   return NextResponse.json({
     status: 200,
     data: {

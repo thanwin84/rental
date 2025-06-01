@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
-import { Pagination } from '.';
 import { amenity, highlight, propertyType } from '../constants';
+import { Pagination } from '.';
 export type HighlightType = keyof typeof highlight;
 export type HighlightValue = (typeof highlight)[HighlightType];
 export type AmenityType = keyof typeof amenity;
@@ -13,7 +13,7 @@ export interface IProperty {
   name: string;
   description: string;
   pricePerMonth: number;
-  securityDeposit?: number;
+  securityDeposit: number;
   applicationFee?: number;
   photoUrLs?: string[];
   amenities?: string[];
@@ -55,7 +55,7 @@ export type TProperty = {
   updatedAt: string;
 };
 
-export type Location = {
+export type TLocation = {
   coordinates: [number, number];
   city: string;
   country: string;
@@ -64,7 +64,7 @@ export type Location = {
 };
 
 export type PropertyListApiResponse = {
-  properties: { property: TProperty; location: Location }[];
+  properties: { property: TProperty; location: TLocation }[];
   pagination: Pagination;
 };
 export type PropertyOnMap = {
@@ -79,12 +79,12 @@ export type PropertyOnMap = {
   };
 };
 
-export type SingleProperTy = { property: TProperty; location: Location };
+export type SingleProperTy = { property: TProperty; location: TLocation };
 
 export type FavouritePropertyResponse = {
   properties: Omit<TProperty, 'propertyId'> &
     {
-      location: Omit<Location, 'property'>;
+      location: Omit<TLocation, 'property'>;
     }[];
   pagination: Pagination;
 };
@@ -97,4 +97,39 @@ export type FavouriteProperty = {
   userId: string;
   createdAt: string;
   updatedAt: string;
+};
+export type Property = {
+  id: string;
+  name: string;
+  description: string;
+  pricePerMonth: number;
+  securityDeposit: number;
+  applicationFee: number;
+  isParkingIncluded: boolean;
+  beds: number;
+  baths: number;
+  squareFeet: number;
+  propertyType: string;
+  averageRating: number;
+  numberOfReviews: number;
+  locationId: string;
+  ownerId: string;
+  isAvailable: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  photoUrls: string[];
+  amenities: string[];
+  highLights: string[];
+  owner: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string | null;
+  };
+};
+
+export type GetPropertiesType = {
+  properties: Property[];
+  pagination: Pagination;
 };

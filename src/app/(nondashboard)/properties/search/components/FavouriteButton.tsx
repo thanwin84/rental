@@ -11,6 +11,7 @@ export default function FavouriteButton({ id }: { id: string }) {
   async function handleOnToggleFavouriteId() {
     toggleFavourite(id);
     const result = await addToFavouritePropertyAction(id);
+    console.log(result);
     if (!result.success) {
       toggleFavourite(id);
       toast.error(result.error?.message);

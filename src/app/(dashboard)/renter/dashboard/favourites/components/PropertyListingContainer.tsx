@@ -14,6 +14,7 @@ export default async function PropertyListingContainer({
   const data = await getFavouritePropertiesAction({
     page: Number(searchParams.page || '1'),
   });
+
   if (data.properties.length === 0) {
     return (
       <EmptyState

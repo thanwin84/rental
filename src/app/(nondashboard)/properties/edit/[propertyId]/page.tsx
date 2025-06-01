@@ -1,5 +1,6 @@
 import { getSingleProperty } from '@/lib/db';
 import EditPropertyForm from './EditPropertyForm';
+import { Property } from '@/lib/types';
 
 export default async function EditProperty({
   params,
@@ -13,7 +14,11 @@ export default async function EditProperty({
       <h2 className='text-center text-xl font-semibold text-slate-800'>
         Update your property
       </h2>
-      <EditPropertyForm className='w-[80%] mx-auto' property={property} />;
+      <EditPropertyForm
+        className='w-[80%] mx-auto'
+        property={property as Property}
+      />
+      ;
     </div>
   );
 }

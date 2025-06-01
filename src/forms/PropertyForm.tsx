@@ -1,7 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { PropertyType, propertyZodSchema } from '@/lib/schemas';
+import { PropertyFormType, propertyZodSchema } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import ImageUpload from '@/components/ImageUpload';
@@ -13,14 +13,14 @@ import {
   AmenitiesAndHighlightsForm,
   AdditionInformationForm,
 } from '@/app/(dashboard)/manager/dashboard/create-property/components';
-import { SingleProperTy } from '@/lib/types';
+import { Property } from '@/lib/types';
 
 type Props = {
   className?: string;
   onFormSubmit: (form: FormData) => void;
   isPending: boolean;
   formType?: 'create' | 'edit';
-  initailData?: SingleProperTy;
+  initailData?: Property;
 };
 
 export default function PropertyForm({
@@ -30,35 +30,34 @@ export default function PropertyForm({
   initailData,
   className,
 }: Props) {
-  console.log(initailData?.location);
-  const form = useForm<PropertyType>({
+  const form = useForm<PropertyFormType>({
     resolver: zodResolver(propertyZodSchema),
     defaultValues: {
       property: {
-        name: initailData?.property.name || '',
-        description: initailData?.property.name || '',
-        pricePerMonth: initailData?.property.pricePerMonth || 0,
-        securityDeposit: initailData?.property.securityDeposit || 0,
-        applicationFee: initailData?.property.applicationFee || 0,
-        amenities: initailData?.property.amenities || [],
-        highLights: initailData?.property.highLights || [],
-        isParkingIncluded: initailData?.property.isParkingIncluded || false,
-        beds: initailData?.property.beds || 0,
-        baths: initailData?.property.baths || 0,
-        squareFeet: initailData?.property.squareFeet || 0,
-        isAvailable: initailData?.property.isAvailable || true,
-        propertyType: initailData?.property.propertyType,
+        name: initailData?.name || '',
+        description: initailData?.name || '',
+        pricePerMonth: initailData?.pricePerMonth || 0,
+        securityDeposit: initailData?.securityDeposit || 0,
+        applicationFee: initailData?.applicationFee || 0,
+        amenities: initailData?.amenities || [],
+        highLights: initailData?.highLights || [],
+        isParkingIncluded: initailData?.isParkingIncluded || false,
+        beds: initailData?.beds || 0,
+        baths: initailData?.baths || 0,
+        squareFeet: initailData?.squareFeet || 0,
+        isAvailable: initailData?.isAvailable || true,
+        propertyType: initailData?.propertyType,
       },
       location: {
-        address: initailData?.location.address || '',
-        city: initailData?.location.city || '',
-        state: initailData?.location.state || '',
-        country: initailData?.location.country || '',
+        address: '',
+        city: '',
+        state: '',
+        country: '',
       },
     },
   });
 
-  function onHandleSubmit(formData: PropertyType) {
+  function onHandleSubmit(formData: PropertyFormType) {
     const _formData = new FormData();
     const image = formData?.property.image;
 
@@ -82,9 +81,7 @@ export default function PropertyForm({
         <AdditionInformationForm />
         <div>
           <h2 className='text-xl font-semibold text-slate-800 mb-3'>Photos</h2>
-          <ImageUpload
-            photoUrl={initailData?.property.photoUrLs[0] as string}
-          />
+          <ImageUpload photoUrl={initailData?.photoUrls[0] as string} />
         </div>
         {isPending ? (
           <LoadingButton

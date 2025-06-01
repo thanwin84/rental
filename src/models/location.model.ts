@@ -3,8 +3,7 @@ import { Schema, model, models } from 'mongoose';
 const locationSchema = new Schema(
   {
     propertyId: {
-      type: Schema.Types.ObjectId,
-      ref: 'Property',
+      type: String,
       required: true,
     },
     address: {

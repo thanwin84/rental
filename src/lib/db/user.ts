@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import mongoose from 'mongoose';
 import User from '@/models/user.model'; // Make sure the path is correct
 import { apiResponse } from '@/utils/apiResponse';
 import { connectDb } from '@/db_connect/dbConnect';
-import bcrypt from 'bcryptjs';
+import prisma from '@/lib/prisma';
+import { hashPassword, isPasswordValid } from '@/utils';
 connectDb();
 
 export const getUserById = async (id: string) => {
@@ -16,15 +16,7 @@ export const getUserById = async (id: string) => {
       });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return apiResponse({
-        success: false,
-        message: 'Invalid User ID',
-        status: 400,
-      });
-    }
-
-    const user = await User.findById(id).select('-password'); // Optional: exclude password
+    const user = await prisma.user.findFirst({ where: { id } });
 
     if (!user) {
       return apiResponse({
@@ -52,37 +44,23 @@ export const getUserById = async (id: string) => {
 
 export const loginUser = async (email: string, password: string) => {
   try {
-    const user = await User.findOne({ email });
+    const user = await prisma.user.findFirst({ where: { email } });
     if (!user) {
-      return apiResponse({
-        success: false,
-        status: 404,
-        message: 'User does not exist',
-      });
+      throw new Error('User does not exist');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const correctPassword = await isPasswordValid(password, user.password);
 
-    if (!isPasswordValid) {
-      return apiResponse({
-        success: false,
-        status: 400,
-        message: 'Wrong credentials',
-      });
+    if (!correctPassword) {
+      throw new Error('Wrong credentials');
     }
-
-    return apiResponse({
-      success: true,
-      status: 200,
-      message: 'User is logged in successfully',
-      data: user,
-    });
-  } catch {
-    return apiResponse({
-      success: false,
-      status: 500,
-      message: 'Internal server error',
-    });
+    return user;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error('Internal server error');
+    }
   }
 };
 
@@ -124,4 +102,21 @@ export const updateUserById = async (userId: string, data: any) => {
       message: 'Something went wrong while updating user',
     });
   }
+};
+
+export const createUser = async (data: any) => {
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [{ email: data.email }, { username: data.username }],
+    },
+  });
+  if (existingUser) {
+    throw new Error('User with this email or username already exists.');
+  }
+
+  data.password = await hashPassword(data.password);
+  const user = await prisma.user.create({
+    data: data,
+  });
+  return user;
 };

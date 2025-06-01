@@ -14,7 +14,7 @@ export default function RentButton({ propertyId }: Props) {
   const [open, setOpen] = useState(false);
   const { rentedPropertyIds } = usePropertyStore();
 
-  const isRented = rentedPropertyIds.includes(propertyId);
+  const isRented = rentedPropertyIds?.includes(propertyId);
   function toggleModal() {
     setOpen(!open);
   }
