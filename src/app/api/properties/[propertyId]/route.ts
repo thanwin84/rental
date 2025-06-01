@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  deletePropertyById,
-  getSingleProperty,
-  updateProperty,
-} from '@/lib/db';
+import { deletePropertyById, getSingleProperty } from '@/lib/db';
+import prisma from '@/lib/prisma';
+
 import { uploadToCloudinary } from '@/lib/uploadOnCloudinary';
+import { getCoordinatesFromLocation } from '@/utils';
 import { NextRequest, NextResponse } from 'next/server';
+import { Location } from '@/models';
 
 export async function GET(
   request: NextRequest,
@@ -76,9 +76,29 @@ export async function PUT(
     const location = JSON.parse(data.get('location') as string);
     const property = JSON.parse(data.get('property') as string);
 
+    const { lng, lat } = await getCoordinatesFromLocation(location);
+    const locationData = await Location.findById(property.locationId);
+    if (!locationData) {
+      throw new Error('Location data is not found');
+    }
+    locationData.address = location.address;
+    locationData.city = location.city;
+    locationData.country = location.country;
+    locationData.state = location.state;
+    locationData.location.coordinates = [lng, lat];
+    await locationData.save();
+    const amenities = (property.amenities as string[]).map((value) => ({
+      name: value,
+    }));
+    const photoUrLs: { url: string }[] = [];
+    const highLights = (property.highLights as string[]).map((value) => ({
+      name: value,
+    }));
+
     let uploadResponse;
     if (file) {
       uploadResponse = await uploadToCloudinary(file);
+      photoUrLs.push({ url: uploadResponse.secure_url });
     }
     const newPropertyData = {
       ...property,
@@ -86,13 +106,27 @@ export async function PUT(
     if (uploadResponse) {
       newPropertyData.photoUrLs = [uploadResponse?.secure_url];
     }
-    const result = await updateProperty(
-      {
-        property: newPropertyData,
-        location: location,
+    const result = await prisma.property.update({
+      where: {
+        id: propertyId,
       },
-      propertyId
-    );
+      data: {
+        ...newPropertyData,
+        amenities: {
+          set: [],
+          create: amenities,
+        },
+        highLights: {
+          set: [],
+          create: highLights,
+        },
+        photoUrLs: newPropertyData.photoUrLs,
+      },
+      include: {
+        amenities: true,
+        highLights: true,
+      },
+    });
     return NextResponse.json({
       status: 200,
       message: 'Property is updated successfully',

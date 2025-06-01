@@ -3,7 +3,7 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { amenity, highlight } from '@/lib/constants';
-import { PropertyType } from '@/lib/schemas';
+import { PropertyFormType } from '@/lib/schemas';
 import { splitPascalCaseToString } from '@/utils';
 import { useFormContext } from 'react-hook-form';
 
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function AmenitiesAndHighlightsForm({}: Props) {
-  const { control } = useFormContext<PropertyType>();
+  const { control } = useFormContext<PropertyFormType>();
 
   return (
     <div>

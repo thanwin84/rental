@@ -7,7 +7,6 @@ type Props = {
 
 export default async function FavouritesPage({ searchParams }: Props) {
   const _searchParams = await searchParams;
-
   return (
     <Suspense
       key={JSON.stringify(_searchParams)}

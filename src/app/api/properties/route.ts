@@ -1,11 +1,13 @@
 import { getAuthenticatedUser } from '@/lib/auth';
 import { createLocation } from '@/lib/db/location';
-import { createProperty, getProperties } from '@/lib/db';
+import { getProperties } from '@/lib/db';
 import { uploadToCloudinary } from '@/lib/uploadOnCloudinary';
 import { apiResponse } from '@/utils/apiResponse';
 import { getCoordinatesFromLocation } from '@/utils/location';
 import { NextRequest, NextResponse } from 'next/server';
-import mongoose from 'mongoose';
+
+import { generateUUID } from '@/utils';
+import prisma from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   const data = await request.formData();
@@ -13,9 +15,18 @@ export async function POST(request: NextRequest) {
   const location = JSON.parse(data.get('location') as string);
   const property = JSON.parse(data.get('property') as string);
 
+  const amenities = (property.amenities as string[]).map((value) => ({
+    name: value,
+  }));
+  const photoUrLs: { url: string }[] = [];
+  const highLights = (property.highLights as string[]).map((value) => ({
+    name: value,
+  }));
+
   let uploadResponse;
   if (file) {
     uploadResponse = await uploadToCloudinary(file);
+    photoUrLs.push({ url: uploadResponse.secure_url });
   }
   const { lng, lat } = await getCoordinatesFromLocation(location);
   try {
@@ -32,25 +43,38 @@ export async function POST(request: NextRequest) {
         }
       );
     }
-    const propertyId = new mongoose.Types.ObjectId();
+    const propertyId = generateUUID();
     const locationData = await createLocation({
       ...location,
-      propertyId: propertyId.toString(),
+      propertyId: propertyId,
       location: {
         type: 'Point',
         coordinates: [parseFloat(lng), parseFloat(lat)],
       },
     });
 
-    const newProperty = await createProperty({
-      ...property,
-      _id: propertyId.toString(),
-      locationId: locationData._id,
-      ownerId: user.userId.toString(),
-      photoUrLs: [uploadResponse?.secure_url as string],
+    const newProperty = await prisma.property.create({
+      data: {
+        id: propertyId,
+        name: property.name,
+        description: property.description,
+        pricePerMonth: parseFloat(property.pricePerMonth),
+        securityDeposit: parseFloat(property.securityDeposit || 0),
+        applicationFee: parseFloat(property.applicationFee || 0),
+        photoUrls: { create: photoUrLs },
+        amenities: { create: amenities },
+        highLights: { create: highLights },
+        isParkingIncluded: property.isParkingIncluded || false,
+        beds: parseInt(property.beds),
+        baths: parseInt(property.baths),
+        squareFeet: parseFloat(property.squareFeet || 0),
+        propertyType: property.propertyType,
+        ownerId: user.userId,
+        locationId: locationData._id.toString(),
+      },
     });
 
-    return NextResponse.json(newProperty, { status: newProperty.status });
+    return NextResponse.json(newProperty, { status: 201 });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ success: false, error: error }, { status: 500 });

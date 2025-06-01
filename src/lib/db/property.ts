@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { FavouriteProperty, Lease, Property } from '@/models';
-import { PropertyType } from '../schemas/property';
+import { Lease, Property } from '@/models';
+import { PropertyFormType } from '../schemas/property';
 import { apiResponse } from '@/utils/apiResponse';
 import { connectDb } from '@/db_connect/dbConnect';
 import { Location } from '@/models';
-import { Pagination, SingleProperTy } from '@/lib/types';
-import mongoose from 'mongoose';
+import { GetPropertiesType, Pagination, TLocation } from '@/lib/types';
 import { getCoordinatesFromLocation } from '@/utils';
+import prisma from '../prisma';
 
 connectDb();
 
-export const createProperty = async (data: PropertyType) => {
+export const createProperty = async (data: PropertyFormType) => {
   const newProperty = await Property.create(data);
   return apiResponse({
     success: true,
@@ -20,7 +20,7 @@ export const createProperty = async (data: PropertyType) => {
   });
 };
 export const updateProperty = async (
-  data: PropertyType,
+  data: PropertyFormType,
   propertyId: string
 ) => {
   const updatedProperty = await Property.findByIdAndUpdate(
@@ -48,6 +48,72 @@ export const updateProperty = async (
     location,
   };
 };
+
+export const getPropertiesLocation = async ({
+  polygon,
+  page = 1,
+  limit = 10,
+}: {
+  polygon: string;
+  page?: number;
+  limit?: number;
+}) => {
+  if (!polygon) {
+    throw new Error('Polygon is required');
+  }
+
+  const [southWestLat, southWestLng, northEastLat, northEastLng] = polygon
+    .split(',')
+    .map((coord) => parseFloat(coord));
+
+  if ([southWestLat, southWestLng, northEastLat, northEastLng].some(isNaN)) {
+    throw new Error('Invalid polygon coordinates');
+  }
+
+  const polygonCoordinates = [
+    [
+      [southWestLng, southWestLat],
+      [northEastLng, southWestLat],
+      [northEastLng, northEastLat],
+      [southWestLng, northEastLat],
+      [southWestLng, southWestLat], // Close the polygon
+    ],
+  ];
+
+  const matchStage = {
+    location: {
+      $geoWithin: {
+        $geometry: {
+          type: 'Polygon',
+          coordinates: polygonCoordinates,
+        },
+      },
+    },
+  };
+
+  // Get total count
+  const totalItems = await Location.countDocuments(matchStage);
+  const totalPages = Math.ceil(totalItems / limit);
+
+  // Paginated result
+  const results = await Location.aggregate([
+    { $match: matchStage },
+    { $project: { _id: 1 } },
+    { $skip: (page - 1) * limit },
+    { $limit: limit },
+  ]);
+
+  const locationIds = results.map((item) => item._id.toString());
+  const pagination: Pagination = {
+    totalPages,
+    totalItems,
+    currentPage: page,
+  };
+  return {
+    locationIds,
+    pagination,
+  };
+};
 export const getProperties = async ({
   priceMin,
   priceMax,
@@ -57,13 +123,8 @@ export const getProperties = async ({
   squareFeetMin,
   squareFeetMax,
   amenities,
-  latitude,
-  longitude,
   limit = '3',
   page = '1',
-  city,
-  country,
-  polygon,
   userId,
 }: {
   priceMin?: string;
@@ -82,162 +143,97 @@ export const getProperties = async ({
   country?: string;
   polygon?: string;
   userId?: string;
-}) => {
+}): Promise<GetPropertiesType> => {
   const parsedLimit = Number(limit) || 3;
   const parsedPage = Number(page) || 1;
 
   const skips = (parsedPage - 1) * parsedLimit;
 
-  let polygonCoordinates;
-  if (polygon) {
-    const [southWestLat, southWestLng, northEastLat, northEastLng] = polygon
-      .split(',')
-      .map((coord) => parseFloat(coord));
-    if ([southWestLat, southWestLng, northEastLat, northEastLng].some(isNaN)) {
-      throw new Error('Invalid polygon coordinates');
-    }
-    polygonCoordinates = [
-      [
-        [southWestLng, southWestLat],
-        [northEastLng, southWestLat],
-        [northEastLng, northEastLat],
-        [southWestLng, northEastLat],
-        [southWestLng, southWestLat], // Close the polygon with the first point
-      ],
-    ];
-  }
+  const filters: any = {
+    isAvailable: true,
+  };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const query: any = {};
-  if (city) {
-    query['location.city'] = { $regex: city, $options: 'i' };
-  }
-  if (country) {
-    query['location.country'] = { $regex: country, $options: 'i' };
-  }
   if (priceMin || priceMax) {
-    query['property.pricePerMonth'] = {};
-    if (priceMin) query['property.pricePerMonth'].$gte = Number(priceMin);
-    if (priceMax) query['property.pricePerMonth'].$lte = Number(priceMax);
+    filters.pricePerMonth = {};
+    if (priceMin) filters.pricePerMonth.gte = Number(priceMin);
+    if (priceMax) filters.pricePerMonth.lte = Number(priceMax);
   }
 
   if (squareFeetMin || squareFeetMax) {
-    query['property.squareFeet'] = {};
-    if (squareFeetMin)
-      query['property.squareFeet'].$gte = Number(squareFeetMin);
-    if (squareFeetMax)
-      query['property.squareFeet'].$lte = Number(squareFeetMax);
+    filters.squareFeet = {};
+    if (squareFeetMin) filters.squareFeet.gte = Number(squareFeetMin);
+    if (squareFeetMax) filters.squareFeet.lte = Number(squareFeetMax);
   }
 
-  if (baths) {
-    query['property.baths'] = Number(baths);
-  }
-  if (beds) {
-    query['property.beds'] = Number(beds);
-  }
-  if (userId) {
-    query['property.ownerId'] = new mongoose.Types.ObjectId(userId);
-  }
+  if (baths) filters.baths = Number(baths);
+  if (beds) filters.beds = Number(beds);
+  if (userId) filters.ownerId = userId;
+
   if (propertyType && propertyType.length > 0) {
-    query['property.propertyType'] = { $in: propertyType };
+    filters.propertyType = { in: propertyType };
   }
-
-  if (amenities && amenities.length > 0) {
-    query['property.amenities'] = { $all: amenities };
-  }
-
-  const lookupStage = {
-    $lookup: {
-      from: 'properties',
-      localField: 'propertyId',
-      foreignField: '_id',
-      as: 'property',
-    },
-  };
-  const addFieldStage = {
-    $addFields: {
-      property: { $first: '$property' },
-      'location.coordinates': '$location.coordinates',
-      'location.city': '$city',
-      'location.address': '$address',
-      'location.country': '$country',
-      'location.state': '$state',
-    },
-  };
-
-  const queryStage = {
-    $match: query,
-  };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pipeline: any = [
-    lookupStage,
-    addFieldStage,
-    {
-      $project: {
-        property: 1,
-        location: 1,
-        _id: 0,
-      },
-    },
-    queryStage,
-    {
-      $skip: skips,
-    },
-    {
-      $limit: parsedLimit,
-    },
-  ];
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const countPipeline: any = [lookupStage, addFieldStage, queryStage];
-
-  if (longitude && latitude) {
-    const geoLocationStage = {
-      $geoNear: {
-        near: {
-          type: 'Point',
-          coordinates: [parseFloat(longitude), parseFloat(latitude)],
-        },
-        distanceField: 'distance',
-        spherical: true,
-        maxDistance: 10000, // 10km
-      },
-    };
-    pipeline.unshift(geoLocationStage);
-    countPipeline.unshift(geoLocationStage);
-  }
-  if (!city && !country && polygon) {
-    const geoWithin = {
-      $match: {
-        location: {
-          $geoWithin: {
-            $geometry: {
-              type: 'Polygon',
-              coordinates: polygonCoordinates,
+  const where: any = {
+    ...filters,
+    amenities:
+      amenities && amenities.length > 0
+        ? {
+            some: {
+              name: { in: amenities },
             },
+          }
+        : undefined,
+  };
+
+  const [properties, totalCount] = await Promise.all([
+    prisma.property.findMany({
+      where,
+      skip: skips,
+      take: parsedLimit,
+      include: {
+        photoUrls: {
+          select: {
+            url: true,
+          },
+        },
+        amenities: {
+          select: {
+            name: true,
+          },
+        },
+        highLights: {
+          select: {
+            name: true,
+          },
+        },
+        owner: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phoneNumber: true,
           },
         },
       },
-    };
-    pipeline.unshift(geoWithin);
-    countPipeline.unshift(geoWithin);
-  }
-
-  const properties = await Location.aggregate(pipeline);
-  const countResult = await Location.aggregate([
-    ...countPipeline,
-    { $count: 'total' },
+    }),
+    prisma.property.count({ where }),
   ]);
-  const total = countResult[0]?.total || 0;
-  const totalPages = Math.ceil(total / Number(limit));
+  const formatedProperties = properties.map((property) => ({
+    ...property,
+    amenities: property.amenities.map((item) => item.name),
+    highLights: property.highLights.map((item) => item.name),
+    photoUrls: property.photoUrls.map((item) => item.url),
+  }));
 
+  const totalPages = Math.ceil(totalCount / parsedLimit);
   const pagination: Pagination = {
-    totalItems: total,
     totalPages,
     currentPage: Number(page),
+    totalItems: totalCount,
   };
+
   return {
-    properties: JSON.parse(JSON.stringify(properties)),
+    properties: formatedProperties,
     pagination,
   };
 };
@@ -307,31 +303,57 @@ export const getPropertiesWithinMapBounds = async (
   return properties;
 };
 
-export const getSingleProperty = async (
-  propertyId: string
-): Promise<SingleProperTy> => {
-  const property: any = await Property.findById(propertyId).populate(
-    'locationId'
-  );
-  if (!property) {
-    throw new Error('Propert not found');
-  }
-  const propertyObj = property.toObject();
+export const getSingleProperty = async (propertyId: string) => {
+  const [property, location] = await Promise.all([
+    await prisma.property.findUnique({
+      where: {
+        id: propertyId,
+      },
+      include: {
+        photoUrls: {
+          select: {
+            url: true,
+          },
+        },
+        amenities: {
+          select: {
+            name: true,
+          },
+        },
+        highLights: {
+          select: {
+            name: true,
+          },
+        },
+        owner: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phoneNumber: true,
+          },
+        },
+      },
+    }),
+    await Location.findOne({ propertyId: propertyId }),
+  ]);
 
-  const location = {
-    coordinates: propertyObj.locationId.location.coordinates,
-    city: propertyObj.locationId.city,
-    country: propertyObj.locationId.country,
-    state: propertyObj.locationId.state,
-    address: propertyObj.locationId.address,
+  const _location: TLocation = {
+    city: location.city,
+    country: location.country,
+    state: location?.state,
+    coordinates: location.location.coordinates as [number, number],
   };
-  delete propertyObj.locationId;
-  const newProperty = {
-    property: propertyObj,
-    location: location,
+  const formatedProperty = {
+    ...property,
+    amenities: property?.amenities.map((item) => item.name),
+    highLights: property?.highLights.map((item) => item.name),
+    photoUrls: property?.photoUrls.map((item) => item.url),
+    propertyLocation: _location,
   };
 
-  return JSON.parse(JSON.stringify(newProperty));
+  return formatedProperty;
 };
 
 export const deletePropertyById = async (propertyId: string) => {
@@ -350,72 +372,50 @@ export const getFavouriteProperties = async ({
   userId: string;
   page?: number;
   limit?: number;
-}) => {
+}): Promise<GetPropertiesType> => {
   const skip = (page - 1) * limit;
 
-  const properties = await FavouriteProperty.aggregate([
-    {
-      $match: {
-        userId: new mongoose.Types.ObjectId(userId),
-      },
+  const properties = await prisma.favouriteProperty.findMany({
+    where: {
+      userId: userId,
     },
-    {
-      $lookup: {
-        from: 'properties',
-        localField: 'propertyId',
-        foreignField: '_id',
-        as: 'property',
-      },
-    },
-    {
-      $addFields: {
-        property: { $first: '$property' },
-      },
-    },
-    {
-      $lookup: {
-        from: 'locations',
-        localField: 'property.locationId',
-        foreignField: '_id',
-        as: 'locationData',
-      },
-    },
-    {
-      $addFields: {
-        locationData: { $first: '$locationData' },
-      },
-    },
-
-    {
-      $addFields: {
-        location: {
-          coordinates: '$locationData.location.coordinates',
-          city: '$locationData.city',
-          country: '$locationData.country',
-          address: '$locationData.address',
-          state: '$locationData.state',
+    include: {
+      property: {
+        include: {
+          photoUrls: {
+            select: {
+              url: true,
+            },
+          },
+          highLights: {
+            select: { name: true },
+          },
+          amenities: {
+            select: { name: true },
+          },
+          owner: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              phoneNumber: true,
+            },
+          },
         },
       },
     },
-    {
-      $skip: skip,
-    },
-    {
-      $limit: limit,
-    },
-
-    {
-      $project: {
-        locationData: 0,
-        propertyId: 0,
-        userId: 0,
-        _id: 0,
-        __v: 0,
-      },
-    },
-  ]);
-  const totalCount = await FavouriteProperty.countDocuments({
-    userId: userId,
+    skip: skip,
+    take: limit,
+  });
+  const formatedProperties = properties.map(({ property }) => ({
+    ...property,
+    amenities: property.amenities.map((item) => item.name),
+    highLights: property.highLights.map((item) => item.name),
+    photoUrls: property.photoUrls.map((item) => item.url),
+  }));
+  const totalCount = await prisma.favouriteProperty.count({
+    where: { userId },
   });
   const totalPages = Math.ceil(totalCount / limit);
   const pagination: Pagination = {
@@ -424,7 +424,7 @@ export const getFavouriteProperties = async ({
     totalPages: totalPages,
   };
   return {
-    properties: JSON.parse(JSON.stringify(properties)),
+    properties: formatedProperties,
     pagination,
   };
 };

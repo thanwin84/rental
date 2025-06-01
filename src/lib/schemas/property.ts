@@ -26,8 +26,8 @@ export const propertyZodSchema = z.object({
       message: 'Security deposit is required.',
     }),
     applicationFee: z.coerce.number(),
-    amenities: z.array(AmenityEnum).optional(),
-    highLights: z.array(HighlightEnum).optional(),
+    amenities: z.array(z.string()).optional(),
+    highLights: z.array(z.string()).optional(),
     isParkingIncluded: z.boolean().optional(),
     beds: z.coerce
       .number({ message: 'Beds is required' })
@@ -36,7 +36,7 @@ export const propertyZodSchema = z.object({
       .number({ message: 'Baths is required' })
       .min(0, 'Baths must be a positive number'),
     squareFeet: z.coerce.number().optional(),
-    propertyType: PropertyTypeEnum,
+    propertyType: z.string(),
     averageRating: z.coerce.number().optional(),
     numberOfReviews: z.coerce.number().optional(),
     isAvailable: z.coerce.boolean(),
@@ -72,4 +72,4 @@ export const rentFormSchema = z
 
 export type RentFormType = z.infer<typeof rentFormSchema>;
 
-export type PropertyType = z.infer<typeof propertyZodSchema>;
+export type PropertyFormType = z.infer<typeof propertyZodSchema>;

@@ -2760,12 +2760,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit: number | null
-    applicationFee: number | null
-    isParkingIncluded: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded: boolean
     beds: number
     baths: number
-    squareFeet: number | null
+    squareFeet: number
     propertyType: string
     averageRating: number
     numberOfReviews: number
@@ -2869,12 +2869,12 @@ export namespace Prisma {
       name: string
       description: string
       pricePerMonth: number
-      securityDeposit: number | null
-      applicationFee: number | null
-      isParkingIncluded: boolean | null
+      securityDeposit: number
+      applicationFee: number
+      isParkingIncluded: boolean
       beds: number
       baths: number
-      squareFeet: number | null
+      squareFeet: number
       propertyType: string
       averageRating: number
       numberOfReviews: number
@@ -7705,12 +7705,12 @@ export namespace Prisma {
     name?: StringFilter<"Property"> | string
     description?: StringFilter<"Property"> | string
     pricePerMonth?: FloatFilter<"Property"> | number
-    securityDeposit?: FloatNullableFilter<"Property"> | number | null
-    applicationFee?: FloatNullableFilter<"Property"> | number | null
-    isParkingIncluded?: BoolNullableFilter<"Property"> | boolean | null
+    securityDeposit?: FloatFilter<"Property"> | number
+    applicationFee?: FloatFilter<"Property"> | number
+    isParkingIncluded?: BoolFilter<"Property"> | boolean
     beds?: IntFilter<"Property"> | number
     baths?: IntFilter<"Property"> | number
-    squareFeet?: FloatNullableFilter<"Property"> | number | null
+    squareFeet?: FloatFilter<"Property"> | number
     propertyType?: StringFilter<"Property"> | string
     averageRating?: FloatFilter<"Property"> | number
     numberOfReviews?: IntFilter<"Property"> | number
@@ -7731,12 +7731,12 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     pricePerMonth?: SortOrder
-    securityDeposit?: SortOrderInput | SortOrder
-    applicationFee?: SortOrderInput | SortOrder
-    isParkingIncluded?: SortOrderInput | SortOrder
+    securityDeposit?: SortOrder
+    applicationFee?: SortOrder
+    isParkingIncluded?: SortOrder
     beds?: SortOrder
     baths?: SortOrder
-    squareFeet?: SortOrderInput | SortOrder
+    squareFeet?: SortOrder
     propertyType?: SortOrder
     averageRating?: SortOrder
     numberOfReviews?: SortOrder
@@ -7761,12 +7761,12 @@ export namespace Prisma {
     name?: StringFilter<"Property"> | string
     description?: StringFilter<"Property"> | string
     pricePerMonth?: FloatFilter<"Property"> | number
-    securityDeposit?: FloatNullableFilter<"Property"> | number | null
-    applicationFee?: FloatNullableFilter<"Property"> | number | null
-    isParkingIncluded?: BoolNullableFilter<"Property"> | boolean | null
+    securityDeposit?: FloatFilter<"Property"> | number
+    applicationFee?: FloatFilter<"Property"> | number
+    isParkingIncluded?: BoolFilter<"Property"> | boolean
     beds?: IntFilter<"Property"> | number
     baths?: IntFilter<"Property"> | number
-    squareFeet?: FloatNullableFilter<"Property"> | number | null
+    squareFeet?: FloatFilter<"Property"> | number
     propertyType?: StringFilter<"Property"> | string
     averageRating?: FloatFilter<"Property"> | number
     numberOfReviews?: IntFilter<"Property"> | number
@@ -7787,12 +7787,12 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     pricePerMonth?: SortOrder
-    securityDeposit?: SortOrderInput | SortOrder
-    applicationFee?: SortOrderInput | SortOrder
-    isParkingIncluded?: SortOrderInput | SortOrder
+    securityDeposit?: SortOrder
+    applicationFee?: SortOrder
+    isParkingIncluded?: SortOrder
     beds?: SortOrder
     baths?: SortOrder
-    squareFeet?: SortOrderInput | SortOrder
+    squareFeet?: SortOrder
     propertyType?: SortOrder
     averageRating?: SortOrder
     numberOfReviews?: SortOrder
@@ -7816,12 +7816,12 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Property"> | string
     description?: StringWithAggregatesFilter<"Property"> | string
     pricePerMonth?: FloatWithAggregatesFilter<"Property"> | number
-    securityDeposit?: FloatNullableWithAggregatesFilter<"Property"> | number | null
-    applicationFee?: FloatNullableWithAggregatesFilter<"Property"> | number | null
-    isParkingIncluded?: BoolNullableWithAggregatesFilter<"Property"> | boolean | null
+    securityDeposit?: FloatWithAggregatesFilter<"Property"> | number
+    applicationFee?: FloatWithAggregatesFilter<"Property"> | number
+    isParkingIncluded?: BoolWithAggregatesFilter<"Property"> | boolean
     beds?: IntWithAggregatesFilter<"Property"> | number
     baths?: IntWithAggregatesFilter<"Property"> | number
-    squareFeet?: FloatNullableWithAggregatesFilter<"Property"> | number | null
+    squareFeet?: FloatWithAggregatesFilter<"Property"> | number
     propertyType?: StringWithAggregatesFilter<"Property"> | string
     averageRating?: FloatWithAggregatesFilter<"Property"> | number
     numberOfReviews?: IntWithAggregatesFilter<"Property"> | number
@@ -8159,12 +8159,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -8184,12 +8184,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -8209,12 +8209,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -8234,12 +8234,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -8259,12 +8259,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -8280,12 +8280,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -8300,12 +8300,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -8721,22 +8721,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type BoolNullableFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
-  }
-
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -8888,30 +8872,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
-  export type BoolNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBoolNullableFilter<$PrismaModel>
-    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -9212,18 +9172,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type NullableFloatFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type NullableBoolFieldUpdateOperationsInput = {
-    set?: boolean | null
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -9603,22 +9551,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedBoolNullableFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableFilter<$PrismaModel> | boolean | null
-  }
-
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[]
@@ -9633,30 +9565,6 @@ export namespace Prisma {
     _sum?: NestedFloatFilter<$PrismaModel>
     _min?: NestedFloatFilter<$PrismaModel>
     _max?: NestedFloatFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
-  export type NestedBoolNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel> | null
-    not?: NestedBoolNullableWithAggregatesFilter<$PrismaModel> | boolean | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedBoolNullableFilter<$PrismaModel>
-    _max?: NestedBoolNullableFilter<$PrismaModel>
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -9680,12 +9588,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -9704,12 +9612,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -9777,12 +9685,12 @@ export namespace Prisma {
     name?: StringFilter<"Property"> | string
     description?: StringFilter<"Property"> | string
     pricePerMonth?: FloatFilter<"Property"> | number
-    securityDeposit?: FloatNullableFilter<"Property"> | number | null
-    applicationFee?: FloatNullableFilter<"Property"> | number | null
-    isParkingIncluded?: BoolNullableFilter<"Property"> | boolean | null
+    securityDeposit?: FloatFilter<"Property"> | number
+    applicationFee?: FloatFilter<"Property"> | number
+    isParkingIncluded?: BoolFilter<"Property"> | boolean
     beds?: IntFilter<"Property"> | number
     baths?: IntFilter<"Property"> | number
-    squareFeet?: FloatNullableFilter<"Property"> | number | null
+    squareFeet?: FloatFilter<"Property"> | number
     propertyType?: StringFilter<"Property"> | string
     averageRating?: FloatFilter<"Property"> | number
     numberOfReviews?: IntFilter<"Property"> | number
@@ -10086,12 +9994,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10110,12 +10018,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10150,12 +10058,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10174,12 +10082,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10198,12 +10106,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10222,12 +10130,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10262,12 +10170,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10286,12 +10194,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10310,12 +10218,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10334,12 +10242,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10374,12 +10282,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10398,12 +10306,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10422,12 +10330,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10446,12 +10354,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10529,12 +10437,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10553,12 +10461,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10626,12 +10534,12 @@ export namespace Prisma {
     name: string
     description: string
     pricePerMonth: number
-    securityDeposit?: number | null
-    applicationFee?: number | null
-    isParkingIncluded?: boolean | null
+    securityDeposit: number
+    applicationFee: number
+    isParkingIncluded?: boolean
     beds: number
     baths: number
-    squareFeet?: number | null
+    squareFeet?: number
     propertyType: string
     averageRating?: number
     numberOfReviews?: number
@@ -10651,12 +10559,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10675,12 +10583,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number
@@ -10699,12 +10607,12 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     pricePerMonth?: FloatFieldUpdateOperationsInput | number
-    securityDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
-    applicationFee?: NullableFloatFieldUpdateOperationsInput | number | null
-    isParkingIncluded?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    securityDeposit?: FloatFieldUpdateOperationsInput | number
+    applicationFee?: FloatFieldUpdateOperationsInput | number
+    isParkingIncluded?: BoolFieldUpdateOperationsInput | boolean
     beds?: IntFieldUpdateOperationsInput | number
     baths?: IntFieldUpdateOperationsInput | number
-    squareFeet?: NullableFloatFieldUpdateOperationsInput | number | null
+    squareFeet?: FloatFieldUpdateOperationsInput | number
     propertyType?: StringFieldUpdateOperationsInput | string
     averageRating?: FloatFieldUpdateOperationsInput | number
     numberOfReviews?: IntFieldUpdateOperationsInput | number

@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { propertyType } from '@/lib/constants';
-import { PropertyType } from '@/lib/schemas';
+import { PropertyFormType } from '@/lib/schemas';
 
 import { useFormContext } from 'react-hook-form';
 
@@ -24,7 +24,7 @@ type Props = {
 };
 
 export default function PropertyDetailsForm({}: Props) {
-  const { control } = useFormContext<PropertyType>();
+  const { control } = useFormContext<PropertyFormType>();
 
   return (
     <div>

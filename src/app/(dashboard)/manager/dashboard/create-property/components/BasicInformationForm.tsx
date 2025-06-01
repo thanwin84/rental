@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { PropertyType } from '@/lib/schemas';
+import { PropertyFormType } from '@/lib/schemas';
 import { useFormContext } from 'react-hook-form';
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function BasicInformationForm({}: Props) {
-  const { control } = useFormContext<PropertyType>();
+  const { control } = useFormContext<PropertyFormType>();
   return (
     <div className='space-y-3'>
       <h2 className='text-xl font-semibold text-slate-800 '>

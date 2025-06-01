@@ -1,3 +1,5 @@
+import bcrypt from 'bcryptjs';
+
 export * from './splitPascalCaseToString';
 export * from './getFormValues';
 export * from './customFetch';
@@ -5,6 +7,7 @@ export * from './apiResponse';
 export * from './location';
 export * from './response';
 export * from './date';
+export * from './generateUUID';
 
 export function offsetCoordinates([lng, lat]: [number, number]) {
   const offset = (Math.random() - 0.5) * 0.0005; // small shift
@@ -92,4 +95,16 @@ export function parsePropertySearchParams(
     country: searchParams.country as string,
     polygon: searchParams.polygon as string,
   };
+}
+
+export async function hashPassword(password: string) {
+  const salt = await bcrypt.genSalt(10);
+  return await bcrypt.hash(password, salt);
+}
+
+export async function isPasswordValid(
+  password: string,
+  hashedPassword: string
+) {
+  return await bcrypt.compare(password, hashedPassword);
 }

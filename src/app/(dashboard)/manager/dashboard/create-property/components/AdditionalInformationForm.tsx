@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { PropertyType } from '@/lib/schemas';
+import { PropertyFormType } from '@/lib/schemas';
 import { useFormContext } from 'react-hook-form';
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function AdditionInformationForm({ className }: Props) {
-  const { control } = useFormContext<PropertyType>();
+  const { control } = useFormContext<PropertyFormType>();
   return (
     <div className={`${className}`}>
       <h2 className='text-xl font-semibold text-slate-800 mb-3'>
